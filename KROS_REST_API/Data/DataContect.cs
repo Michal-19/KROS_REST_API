@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using KROS_REST_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace KROS_REST_API.Data
 {
-    public class DataContect : DbContext
+    public class DataContext : DbContext
     {
-        public DataContect(DbContextOptions<DataContect> options) : base(options) { }
-
+        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+        public DbSet<Employee> employees { get; set; }
     }
 }
