@@ -7,5 +7,6 @@ namespace KROS_REST_API.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Company> Companies { get; set; }
     }
 }
