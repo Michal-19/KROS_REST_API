@@ -3,6 +3,7 @@ using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KROS_REST_API.Controllers
 {

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KROS_REST_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230302211335_Tables")]
+    [Migration("20230307114444_Tables")]
     partial class Tables
     {
         /// <inheritdoc />
@@ -55,11 +55,9 @@ namespace KROS_REST_API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Degree")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
@@ -71,7 +69,6 @@ namespace KROS_REST_API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TelephoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

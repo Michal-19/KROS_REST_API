@@ -36,7 +36,7 @@ namespace KROS_REST_API.Controllers
         {
             var employee = _context.Employees.Find(company.EmployeeId);
             if (employee == null)
-                return BadRequest();
+                return BadRequest("Employee with id " + company.EmployeeId + " doesnt exist!");
             var newCompany = new Company()
             {
                 Name = company.Name,
