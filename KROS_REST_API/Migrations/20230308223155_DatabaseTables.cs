@@ -5,7 +5,7 @@
 namespace KROS_REST_API.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class DatabaseTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -64,11 +64,66 @@ namespace KROS_REST_API.Migrations
                         name: "FK_Divisions_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Divisions_Employees_DivisionChiefId",
                         column: x => x.DivisionChiefId,
                         principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Projects",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProjectChiefId = table.Column<int>(type: "int", nullable: true),
+                    DivisionId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Projects", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Projects_Divisions_DivisionId",
+                        column: x => x.DivisionId,
+                        principalTable: "Divisions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Projects_Employees_ProjectChiefId",
+                        column: x => x.ProjectChiefId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Departments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DepartmentChiefId = table.Column<int>(type: "int", nullable: true),
+                    ProjectId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Departments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Departments_Employees_DepartmentChiefId",
+                        column: x => x.DepartmentChiefId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Departments_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                 });
@@ -79,6 +134,16 @@ namespace KROS_REST_API.Migrations
                 column: "DirectorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Departments_DepartmentChiefId",
+                table: "Departments",
+                column: "DepartmentChiefId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Departments_ProjectId",
+                table: "Departments",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Divisions_CompanyId",
                 table: "Divisions",
                 column: "CompanyId");
@@ -87,11 +152,27 @@ namespace KROS_REST_API.Migrations
                 name: "IX_Divisions_DivisionChiefId",
                 table: "Divisions",
                 column: "DivisionChiefId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_DivisionId",
+                table: "Projects",
+                column: "DivisionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_ProjectChiefId",
+                table: "Projects",
+                column: "ProjectChiefId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "Projects");
+
             migrationBuilder.DropTable(
                 name: "Divisions");
 

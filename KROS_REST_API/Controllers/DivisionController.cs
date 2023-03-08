@@ -20,13 +20,13 @@ namespace KROS_REST_API.Controllers
         [HttpGet]
         public ActionResult<ICollection<Division>> GetAllDivisions() 
         {
-            return _context.Divisions.ToList();
+            return _context.Divisions.Include(x => x.Projects).ToList();
         }
 
         [HttpGet("{id}")]
         public ActionResult<Division> GetDivisionById(int id)
         {
-            var division = _context.Divisions.SingleOrDefault(d => d.Id == id);
+            var division = _context.Divisions.Include(x => x.Projects).SingleOrDefault(d => d.Id == id);
             if (division == null)
                 return NotFound("Division with id " + id + " doesnt exist!");
             return Ok(division);
@@ -49,13 +49,13 @@ namespace KROS_REST_API.Controllers
             };
             _context.Divisions.Add(newDivision);
             _context.SaveChanges();
-            return Ok(_context.Divisions);
+            return Ok(_context.Divisions.Include(x => x.Projects));
         }
 
         [HttpPut]
         public ActionResult<Division> UpdateDivision(int id, DivisionDTO division)
         {
-            var divisionToUpdate = _context.Divisions.SingleOrDefault(x => x.Id == id);
+            var divisionToUpdate = _context.Divisions.Include(x => x.Projects).SingleOrDefault(x => x.Id == id);
             if (divisionToUpdate == null)
                 return BadRequest("Division with id " + id + " doesnt exist!");
             var employee = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
@@ -79,7 +79,7 @@ namespace KROS_REST_API.Controllers
                 return NotFound("Division with id" + id + " doesnt exist");
             _context.Divisions.Remove(divisionToDelete);
             _context.SaveChanges();
-            return Ok(_context.Divisions);
+            return Ok(_context.Divisions.Include(x => x.Projects));
         }
     }
 }

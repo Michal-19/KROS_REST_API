@@ -21,13 +21,20 @@ namespace KROS_REST_API.Controllers
         [HttpGet] 
         public ActionResult<List<Employee>> GetAllEmployees() 
         {
-            return Ok(_context.Employees.Include(x => x.CompaniesChief).Include(x => x.DivisionsChief));
+            return Ok(_context.Employees.Include(x => x.CompaniesChief)
+                                        .Include(x => x.DivisionsChief)
+                                        .Include(x => x.ProjectsChief)
+                                        .Include(x => x.DepartmentsChief));
         }
 
         [HttpGet("{id}")]
         public ActionResult<Employee> GetEmployeeById(int id) 
         {
-            var employee = _context.Employees.Include(x => x.CompaniesChief).Include(x => x.DivisionsChief).SingleOrDefault(x => x.Id == id);
+            var employee = _context.Employees.Include(x => x.CompaniesChief)
+                                             .Include(x => x.DivisionsChief)
+                                             .Include(x => x.ProjectsChief)
+                                             .Include(x => x.DepartmentsChief)
+                                             .SingleOrDefault(x => x.Id == id);
             if (employee == null)
                 return NotFound("Employee with id " + id + " doesnt exist!");
             return Ok(employee);
@@ -46,13 +53,20 @@ namespace KROS_REST_API.Controllers
             };
             _context.Employees.Add(newEmployee);
             _context.SaveChanges();
-            return Ok(_context.Employees.Include(x => x.CompaniesChief).Include(x => x.DivisionsChief));
+            return Ok(_context.Employees.Include(x => x.CompaniesChief)
+                                        .Include(x => x.DivisionsChief)
+                                        .Include(x => x.ProjectsChief)
+                                        .Include(x => x.DepartmentsChief));
         }
 
         [HttpPut]
         public ActionResult<Employee> UpdateEmployee(int id, EmployeeDTO updatedEmployee) 
         {
-            var employee = _context.Employees.Include(x => x.CompaniesChief).Include(x => x.DivisionsChief).SingleOrDefault(x => x.Id == id);
+            var employee = _context.Employees.Include(x => x.CompaniesChief)
+                                             .Include(x => x.DivisionsChief)
+                                             .Include(x => x.ProjectsChief)
+                                             .Include(x => x.DepartmentsChief)
+                                             .SingleOrDefault(x => x.Id == id);
             if (employee == null) 
                 return NotFound("Employee with id " + id + " doesnt exist!");
             employee.Degree = updatedEmployee.Degree;
@@ -72,7 +86,10 @@ namespace KROS_REST_API.Controllers
                 return NotFound("Employee with id " + id + " doesnt exist!");
             _context.Remove(employeeToDelete);
             _context.SaveChanges();
-            return Ok(_context.Employees.Include(x => x.CompaniesChief).Include(x => x.DivisionsChief));
+            return Ok(_context.Employees.Include(x => x.CompaniesChief)
+                                        .Include(x => x.DivisionsChief)
+                                        .Include(x => x.ProjectsChief)
+                                        .Include(x => x.DepartmentsChief));
         }
     }
 }

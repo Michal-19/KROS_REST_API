@@ -14,5 +14,7 @@ namespace KROS_REST_API.Models
         public string? Email { get; set; }
         public ICollection<Company> CompaniesChief { get; set; }
         public ICollection<Division> DivisionsChief { get; set; }
+        public ICollection<Project> ProjectsChief { get; set; }
+        public ICollection<Department> DepartmentsChief { get; set; }
     }
 }
