@@ -1,10 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace KROS_REST_API.Models
 {
-    public class Company
+    public class Division
     {
         public int Id { get; set; }
         [Required]
@@ -12,6 +11,8 @@ namespace KROS_REST_API.Models
         [JsonIgnore]
         public Employee? Employee { get; set; }
         public int? EmployeeId { get; set; }
-        public Collection<Division> Divisions { get; set; }
+        [JsonIgnore]
+        public Company? Company { get; set; }
+        public int? CompanyId { get; set; }
     }
 }
