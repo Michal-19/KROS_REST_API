@@ -34,14 +34,14 @@ namespace KROS_REST_API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmployeeId = table.Column<int>(type: "int", nullable: true)
+                    DirectorId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Companies", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Companies_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
+                        name: "FK_Companies_Employees_DirectorId",
+                        column: x => x.DirectorId,
                         principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
@@ -54,7 +54,7 @@ namespace KROS_REST_API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmployeeId = table.Column<int>(type: "int", nullable: true),
+                    DivisionChiefId = table.Column<int>(type: "int", nullable: true),
                     CompanyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -66,17 +66,17 @@ namespace KROS_REST_API.Migrations
                         principalTable: "Companies",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Divisions_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
+                        name: "FK_Divisions_Employees_DivisionChiefId",
+                        column: x => x.DivisionChiefId,
                         principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Companies_EmployeeId",
+                name: "IX_Companies_DirectorId",
                 table: "Companies",
-                column: "EmployeeId");
+                column: "DirectorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Divisions_CompanyId",
@@ -84,9 +84,9 @@ namespace KROS_REST_API.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Divisions_EmployeeId",
+                name: "IX_Divisions_DivisionChiefId",
                 table: "Divisions",
-                column: "EmployeeId");
+                column: "DivisionChiefId");
         }
 
         /// <inheritdoc />

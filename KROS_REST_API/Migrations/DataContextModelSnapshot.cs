@@ -30,7 +30,7 @@ namespace KROS_REST_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("EmployeeId")
+                    b.Property<int?>("DirectorId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -39,7 +39,7 @@ namespace KROS_REST_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("DirectorId");
 
                     b.ToTable("Companies");
                 });
@@ -55,7 +55,7 @@ namespace KROS_REST_API.Migrations
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EmployeeId")
+                    b.Property<int?>("DivisionChiefId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -66,7 +66,7 @@ namespace KROS_REST_API.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("DivisionChiefId");
 
                     b.ToTable("Divisions");
                 });
@@ -103,12 +103,12 @@ namespace KROS_REST_API.Migrations
 
             modelBuilder.Entity("KROS_REST_API.Models.Company", b =>
                 {
-                    b.HasOne("KROS_REST_API.Models.Employee", "Employee")
-                        .WithMany("Companies")
-                        .HasForeignKey("EmployeeId")
+                    b.HasOne("KROS_REST_API.Models.Employee", "Director")
+                        .WithMany("CompaniesChief")
+                        .HasForeignKey("DirectorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.Navigation("Employee");
+                    b.Navigation("Director");
                 });
 
             modelBuilder.Entity("KROS_REST_API.Models.Division", b =>
@@ -117,14 +117,14 @@ namespace KROS_REST_API.Migrations
                         .WithMany("Divisions")
                         .HasForeignKey("CompanyId");
 
-                    b.HasOne("KROS_REST_API.Models.Employee", "Employee")
-                        .WithMany("Divisions")
-                        .HasForeignKey("EmployeeId")
+                    b.HasOne("KROS_REST_API.Models.Employee", "DivisionChief")
+                        .WithMany("DivisionsChief")
+                        .HasForeignKey("DivisionChiefId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Company");
 
-                    b.Navigation("Employee");
+                    b.Navigation("DivisionChief");
                 });
 
             modelBuilder.Entity("KROS_REST_API.Models.Company", b =>
@@ -134,9 +134,9 @@ namespace KROS_REST_API.Migrations
 
             modelBuilder.Entity("KROS_REST_API.Models.Employee", b =>
                 {
-                    b.Navigation("Companies");
+                    b.Navigation("CompaniesChief");
 
-                    b.Navigation("Divisions");
+                    b.Navigation("DivisionsChief");
                 });
 #pragma warning restore 612, 618
         }

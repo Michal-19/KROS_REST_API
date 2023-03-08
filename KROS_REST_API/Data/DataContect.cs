@@ -12,8 +12,8 @@ namespace KROS_REST_API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Company>().HasOne(x => x.Employee).WithMany(x => x.Companies).OnDelete(DeleteBehavior.SetNull);
-            modelBuilder.Entity<Division>().HasOne(x => x.Employee).WithMany(x => x.Divisions).OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Company>().HasOne(x => x.Director).WithMany(x => x.CompaniesChief).OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Division>().HasOne(x => x.DivisionChief).WithMany(x => x.DivisionsChief).OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

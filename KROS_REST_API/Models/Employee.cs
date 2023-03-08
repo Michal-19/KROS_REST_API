@@ -12,7 +12,7 @@ namespace KROS_REST_API.Models
         public string LastName { get; set; }
         public string? TelephoneNumber { get; set; }
         public string? Email { get; set; }
-        public ICollection<Company> Companies { get; set; }
-        public ICollection<Division> Divisions { get; set; }
+        public ICollection<Company> CompaniesChief { get; set; }
+        public ICollection<Division> DivisionsChief { get; set; }
     }
 }

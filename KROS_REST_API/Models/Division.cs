@@ -9,8 +9,8 @@ namespace KROS_REST_API.Models
         [Required]
         public string Name { get; set; }
         [JsonIgnore]
-        public Employee? Employee { get; set; }
-        public int? EmployeeId { get; set; }
+        public Employee? DivisionChief { get; set; }
+        public int? DivisionChiefId { get; set; }
         [JsonIgnore]
         public Company? Company { get; set; }
         public int? CompanyId { get; set; }

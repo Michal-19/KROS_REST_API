@@ -35,7 +35,7 @@ namespace KROS_REST_API.Controllers
         [HttpPost]
         public ActionResult<ICollection<Division>> AddDivision(DivisionDTO division)
         {
-            var employee = _context.Employees.SingleOrDefault(x => x.Id == division.EmployeeId);
+            var employee = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
             if (employee == null)
                 return BadRequest("Wrong or missing EmployeeId value");
             var company = _context.Companies.SingleOrDefault(x => x.Id == division.CompanyId);
@@ -44,7 +44,7 @@ namespace KROS_REST_API.Controllers
             var newDivision = new Division()
             {
                 Name = division.Name,
-                EmployeeId = division.EmployeeId,
+                DivisionChiefId = division.DivisionChiefId,
                 CompanyId = division.CompanyId
             };
             _context.Divisions.Add(newDivision);
@@ -58,14 +58,14 @@ namespace KROS_REST_API.Controllers
             var divisionToUpdate = _context.Divisions.SingleOrDefault(x => x.Id == id);
             if (divisionToUpdate == null)
                 return BadRequest("Division with id " + id + " doesnt exist!");
-            var employee = _context.Employees.SingleOrDefault(x => x.Id == division.EmployeeId);
+            var employee = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
             if (employee == null)
                 return BadRequest("Wrong or missing EmployeeId value");
             var company = _context.Companies.SingleOrDefault(x => x.Id == division.CompanyId);
             if (company == null)
                 return BadRequest("Wrong or missing CompanyId value");
             divisionToUpdate.Name = division.Name;
-            divisionToUpdate.EmployeeId = division.EmployeeId;
+            divisionToUpdate.DivisionChiefId = division.DivisionChiefId;
             divisionToUpdate.CompanyId = division.CompanyId;
             _context.SaveChanges();
             return Ok(divisionToUpdate);
