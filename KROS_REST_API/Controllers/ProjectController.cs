@@ -20,7 +20,7 @@ namespace KROS_REST_API.Controllers
         [HttpGet]
         public ActionResult<ICollection<Project>> GetAllProjects()
         {
-            return Ok(_context.Projects);
+            return Ok(_context.Projects.Include(x => x.Departments));
         }
 
         [HttpGet("{id}")]
@@ -35,9 +35,12 @@ namespace KROS_REST_API.Controllers
         [HttpPost]
         public ActionResult<ICollection<Project>> AddProject(ProjectDTO project)
         {
-            var chief = _context.Employees.SingleOrDefault(x => x.Id == project.ProjectChiefId);
-            if (chief == null)
-                return BadRequest("Wrong filled or empty ProjectChiefId field");
+            if (project.ProjectChiefId.HasValue)
+            {
+                var chief = _context.Employees.SingleOrDefault(x => x.Id == project.ProjectChiefId);
+                if (chief == null)
+                    return BadRequest("Wrong filled or empty ProjectChiefId field");
+            }
             var division = _context.Divisions.SingleOrDefault(x => x.Id == project.DivisionId);
             if (division == null)
                 return BadRequest("Wrong filled or empty DivisionId field");
@@ -58,17 +61,20 @@ namespace KROS_REST_API.Controllers
             var projectToUpdate = _context.Projects.SingleOrDefault(x => x.Id == id);
             if (projectToUpdate == null)
                 return NotFound("Project with id + " + id + " doesnt exist!");
-            var projectChief = _context.Employees.Find(project.ProjectChiefId);
-            if (projectChief == null)
-                return NotFound("Empoyee with id" + project.ProjectChiefId + " doesnt exist!");
+            if (project.ProjectChiefId.HasValue)
+            {
+                var projectChief = _context.Employees.Find(project.ProjectChiefId);
+                if (projectChief == null)
+                    return BadRequest("Empoyee with id" + project.ProjectChiefId + " doesnt exist!");
+            }
             var division = _context.Divisions.Find(project.DivisionId);
             if (division == null)
-                return NotFound("Dividion with id" + project.DivisionId + " doesnt exist");
+                return BadRequest("Dividion with id" + project.DivisionId + " doesnt exist");
             projectToUpdate.Name = project.Name;
             projectToUpdate.ProjectChiefId = project.ProjectChiefId;
             projectToUpdate.DivisionId = project.DivisionId;
             _context.SaveChanges();
-            return Ok(_context.Projects);
+            return Ok(projectToUpdate);
         }
 
         [HttpDelete]
@@ -79,7 +85,7 @@ namespace KROS_REST_API.Controllers
                 return NotFound("Project with id " + id + " doesnt exist");
             _context.Remove(projectToDelete);
             _context.SaveChanges();
-            return Ok(_context.Projects);
+            return Ok(_context.Projects.Include(x => x.Departments));
         }
     }
 }

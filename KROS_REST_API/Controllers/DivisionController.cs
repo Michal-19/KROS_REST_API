@@ -20,7 +20,7 @@ namespace KROS_REST_API.Controllers
         [HttpGet]
         public ActionResult<ICollection<Division>> GetAllDivisions() 
         {
-            return _context.Divisions.Include(x => x.Projects).ToList();
+            return Ok(_context.Divisions.Include(x => x.Projects));
         }
 
         [HttpGet("{id}")]
@@ -35,12 +35,15 @@ namespace KROS_REST_API.Controllers
         [HttpPost]
         public ActionResult<ICollection<Division>> AddDivision(DivisionDTO division)
         {
-            var employee = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
-            if (employee == null)
-                return BadRequest("Wrong or missing EmployeeId value");
+            if (division.DivisionChiefId.HasValue)
+            {
+                var employee = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
+                if (employee == null)
+                    return BadRequest("Divisionwith id " + division.DivisionChiefId + " doesnt exist!");
+            }
             var company = _context.Companies.SingleOrDefault(x => x.Id == division.CompanyId);
             if (company == null)
-                return BadRequest("Wrong or missing CompanyId value");
+                return BadRequest("Wrong filled or missing companyId field!");
             var newDivision = new Division()
             {
                 Name = division.Name,
@@ -57,10 +60,13 @@ namespace KROS_REST_API.Controllers
         {
             var divisionToUpdate = _context.Divisions.Include(x => x.Projects).SingleOrDefault(x => x.Id == id);
             if (divisionToUpdate == null)
-                return BadRequest("Division with id " + id + " doesnt exist!");
-            var employee = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
-            if (employee == null)
-                return BadRequest("Wrong or missing EmployeeId value");
+                return NotFound("Division with id " + id + " doesnt exist!");
+            if (division.DivisionChiefId.HasValue)
+            {
+                var employee = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
+                if (employee == null)
+                    return BadRequest("Wrong or missing EmployeeId value");
+            }
             var company = _context.Companies.SingleOrDefault(x => x.Id == division.CompanyId);
             if (company == null)
                 return BadRequest("Wrong or missing CompanyId value");

@@ -2,6 +2,7 @@
 using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KROS_REST_API.Controllers
 {
@@ -54,7 +55,7 @@ namespace KROS_REST_API.Controllers
             };
             _context.Add(newDepartment);
             _context.SaveChanges();
-            return Ok();
+            return Ok(_context.Departments);
         }
 
         [HttpPut]

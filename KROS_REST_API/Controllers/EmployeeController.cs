@@ -19,7 +19,7 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpGet] 
-        public ActionResult<List<Employee>> GetAllEmployees() 
+        public ActionResult<ICollection<Employee>> GetAllEmployees() 
         {
             return Ok(_context.Employees.Include(x => x.CompaniesChief)
                                         .Include(x => x.DivisionsChief)
@@ -41,7 +41,7 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<List<Employee>> AddEmployee(EmployeeDTO employee) 
+        public ActionResult<ICollection<Employee>> AddEmployee(EmployeeDTO employee) 
         {
             var newEmployee = new Employee()
             {
@@ -79,7 +79,7 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpDelete]
-        public ActionResult<List<Employee>> DeleteEmployee(int id)
+        public ActionResult<ICollection<Employee>> DeleteEmployee(int id)
         {
             var employeeToDelete = _context.Employees.SingleOrDefault(x => x.Id == id);
             if (employeeToDelete == null)
