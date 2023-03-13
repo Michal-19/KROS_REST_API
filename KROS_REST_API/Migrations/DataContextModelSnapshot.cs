@@ -59,7 +59,7 @@ namespace KROS_REST_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProjectId")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -79,7 +79,7 @@ namespace KROS_REST_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<int?>("DivisionChiefId")
@@ -136,7 +136,7 @@ namespace KROS_REST_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("DivisionId")
+                    b.Property<int>("DivisionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -175,7 +175,8 @@ namespace KROS_REST_API.Migrations
                     b.HasOne("KROS_REST_API.Models.Project", "Project")
                         .WithMany("Departments")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("DepartmentChief");
 
@@ -187,7 +188,8 @@ namespace KROS_REST_API.Migrations
                     b.HasOne("KROS_REST_API.Models.Company", "Company")
                         .WithMany("Divisions")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KROS_REST_API.Models.Employee", "DivisionChief")
                         .WithMany("DivisionsChief")
@@ -204,7 +206,8 @@ namespace KROS_REST_API.Migrations
                     b.HasOne("KROS_REST_API.Models.Division", "Division")
                         .WithMany("Projects")
                         .HasForeignKey("DivisionId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("KROS_REST_API.Models.Employee", "ProjectChief")
                         .WithMany("ProjectsChief")

@@ -65,11 +65,11 @@ namespace KROS_REST_API.Controllers
             {
                 var employee = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
                 if (employee == null)
-                    return BadRequest("Wrong or missing EmployeeId value");
+                    return BadRequest("Wrong filled EmployeeId field");
             }
             var company = _context.Companies.SingleOrDefault(x => x.Id == division.CompanyId);
             if (company == null)
-                return BadRequest("Wrong or missing CompanyId value");
+                return BadRequest("Wrong filled or missing CompanyId field");
             divisionToUpdate.Name = division.Name;
             divisionToUpdate.DivisionChiefId = division.DivisionChiefId;
             divisionToUpdate.CompanyId = division.CompanyId;

@@ -12,8 +12,8 @@ namespace KROS_REST_API.Models
         public Employee? ProjectChief { get; set; }
         public int? ProjectChiefId { get; set; }
         [JsonIgnore]
-        public Division? Division { get; set; }
-        public int? DivisionId { get; set; }
+        public Division Division { get; set; }
+        public int DivisionId { get; set; }
         public ICollection<Department> Departments { get; set; }
     }
 }

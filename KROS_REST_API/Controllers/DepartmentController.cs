@@ -41,12 +41,10 @@ namespace KROS_REST_API.Controllers
                 if (chief == null)
                     return BadRequest("Wrong filled or empty employeeChiefId");
             }
-            if (department.ProjectId.HasValue)
-            {
-                var project = _context.Projects.Find(department.ProjectId);
-                if (project == null)
-                    return BadRequest("Wrong filled or empty projectId");
-            }
+            var project = _context.Projects.Find(department.ProjectId);
+            if (project == null)
+                return BadRequest("Wrong filled or empty projectId");
+
             var newDepartment = new Department()
             {
                 Name = department.Name,
@@ -70,12 +68,10 @@ namespace KROS_REST_API.Controllers
                 if (chief == null)
                     return BadRequest("Employee with id" + department.DepartmentChiefId + " doesnt exist!");
             }
-            if (department.ProjectId.HasValue)
-            {
-                var project = _context.Projects.Find(department.ProjectId);
-                if (project == null)
-                    return BadRequest("Project with id" + department.ProjectId + " doesnt exist");
-            }
+            var project = _context.Projects.Find(department.ProjectId);
+            if (project == null)
+                return BadRequest("Project with id" + department.ProjectId + " doesnt exist");
+
             departmentToUpdate.Name = department.Name;
             departmentToUpdate.DepartmentChiefId = department.DepartmentChiefId;
             departmentToUpdate.ProjectId = department.ProjectId;

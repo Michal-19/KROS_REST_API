@@ -12,7 +12,7 @@ namespace KROS_REST_API.Models
         public Employee? DepartmentChief { get; set; }
         public int? DepartmentChiefId { get; set; }
         [JsonIgnore]
-        public Project? Project { get; set; }
-        public int? ProjectId { get; set; }
+        public Project Project { get; set; }
+        public int ProjectId { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace KROS_REST_API.Controllers
             {
                 var chief = _context.Employees.SingleOrDefault(x => x.Id == project.ProjectChiefId);
                 if (chief == null)
-                    return BadRequest("Wrong filled or empty ProjectChiefId field");
+                    return BadRequest("Employee with id " + project.ProjectChiefId + " doesnt exist!");
             }
             var division = _context.Divisions.SingleOrDefault(x => x.Id == project.DivisionId);
             if (division == null)
