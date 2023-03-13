@@ -2,11 +2,10 @@
 
 namespace KROS_REST_API.DTOs
 {
-    public class DivisionDTO
+    public class UpdateProjectDTO
     {
         [Required]
         public string Name { get; set; }
-        public int? DivisionChiefId { get; set; }
-        public int CompanyId { get; set; }
+        public int? ProjectChiefId { get; set; }
     }
 }

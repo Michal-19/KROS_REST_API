@@ -33,7 +33,7 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ICollection<Department>> AddDepartment(DepartmentDTO department)
+        public ActionResult<ICollection<Department>> AddDepartment(CreateDepartmentDTO department)
         {
             if (department.DepartmentChiefId.HasValue)
             {
@@ -57,7 +57,7 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpPut]
-        public ActionResult<Department> UpdateDepartment(int id, DepartmentDTO department)
+        public ActionResult<Department> UpdateDepartment(int id, UpdateDepartmentDTO department)
         {
             var departmentToUpdate = _context.Departments.Find(id);
             if (departmentToUpdate == null)
@@ -68,13 +68,8 @@ namespace KROS_REST_API.Controllers
                 if (chief == null)
                     return BadRequest("Employee with id" + department.DepartmentChiefId + " doesnt exist!");
             }
-            var project = _context.Projects.Find(department.ProjectId);
-            if (project == null)
-                return BadRequest("Project with id" + department.ProjectId + " doesnt exist");
-
             departmentToUpdate.Name = department.Name;
             departmentToUpdate.DepartmentChiefId = department.DepartmentChiefId;
-            departmentToUpdate.ProjectId = department.ProjectId;
             _context.SaveChanges();
             return Ok(departmentToUpdate);
         }

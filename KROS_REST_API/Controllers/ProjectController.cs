@@ -33,7 +33,7 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ICollection<Project>> AddProject(ProjectDTO project)
+        public ActionResult<ICollection<Project>> AddProject(CreateProjectDTO project)
         {
             if (project.ProjectChiefId.HasValue)
             {
@@ -56,9 +56,9 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpPut]
-        public ActionResult<Project> UpdateProject(int id, ProjectDTO project)
+        public ActionResult<Project> UpdateProject(int id, UpdateProjectDTO project)
         {
-            var projectToUpdate = _context.Projects.SingleOrDefault(x => x.Id == id);
+            var projectToUpdate = _context.Projects.Include(x => x.Departments).SingleOrDefault(x => x.Id == id);
             if (projectToUpdate == null)
                 return NotFound("Project with id + " + id + " doesnt exist!");
             if (project.ProjectChiefId.HasValue)
@@ -67,12 +67,8 @@ namespace KROS_REST_API.Controllers
                 if (projectChief == null)
                     return BadRequest("Empoyee with id" + project.ProjectChiefId + " doesnt exist!");
             }
-            var division = _context.Divisions.Find(project.DivisionId);
-            if (division == null)
-                return BadRequest("Dividion with id" + project.DivisionId + " doesnt exist");
             projectToUpdate.Name = project.Name;
             projectToUpdate.ProjectChiefId = project.ProjectChiefId;
-            projectToUpdate.DivisionId = project.DivisionId;
             _context.SaveChanges();
             return Ok(projectToUpdate);
         }

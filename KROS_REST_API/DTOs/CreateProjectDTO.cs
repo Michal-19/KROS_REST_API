@@ -2,7 +2,7 @@
 
 namespace KROS_REST_API.DTOs
 {
-    public class ProjectDTO
+    public class CreateProjectDTO
     {
         [Required]
         public string Name { get; set; }

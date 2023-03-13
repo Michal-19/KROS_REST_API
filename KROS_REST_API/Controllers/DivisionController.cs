@@ -33,7 +33,7 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ICollection<Division>> AddDivision(DivisionDTO division)
+        public ActionResult<ICollection<Division>> AddDivision(CreateDivisionDTO division)
         {
             if (division.DivisionChiefId.HasValue)
             {
@@ -56,7 +56,7 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpPut]
-        public ActionResult<Division> UpdateDivision(int id, DivisionDTO division)
+        public ActionResult<Division> UpdateDivision(int id, UpdateDivisionDTO division)
         {
             var divisionToUpdate = _context.Divisions.Include(x => x.Projects).SingleOrDefault(x => x.Id == id);
             if (divisionToUpdate == null)
@@ -67,12 +67,8 @@ namespace KROS_REST_API.Controllers
                 if (employee == null)
                     return BadRequest("Wrong filled EmployeeId field");
             }
-            var company = _context.Companies.SingleOrDefault(x => x.Id == division.CompanyId);
-            if (company == null)
-                return BadRequest("Wrong filled or missing CompanyId field");
             divisionToUpdate.Name = division.Name;
             divisionToUpdate.DivisionChiefId = division.DivisionChiefId;
-            divisionToUpdate.CompanyId = division.CompanyId;
             _context.SaveChanges();
             return Ok(divisionToUpdate);
         }
