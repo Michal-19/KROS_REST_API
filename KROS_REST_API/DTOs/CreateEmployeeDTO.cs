@@ -2,7 +2,7 @@
 
 namespace KROS_REST_API.DTOs
 {
-    public class EmployeeDTO
+    public class CreateEmployeeDTO
     {
         public string? Degree { get; set; }
         [Required]
@@ -11,5 +11,6 @@ namespace KROS_REST_API.DTOs
         public string LastName { get; set; }
         public string? TelephoneNumber { get; set; }
         public string? Email { get; set; }
+        public int CompanyId { get; set; }
     }
 }

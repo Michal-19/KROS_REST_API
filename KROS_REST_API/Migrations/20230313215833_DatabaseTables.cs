@@ -11,23 +11,6 @@ namespace KROS_REST_API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Employees",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Degree = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TelephoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Employees", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Companies",
                 columns: table => new
                 {
@@ -39,12 +22,29 @@ namespace KROS_REST_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Companies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Degree = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TelephoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CompanyWorkId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Companies_Employees_DirectorId",
-                        column: x => x.DirectorId,
-                        principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        name: "FK_Employees_Companies_CompanyWorkId",
+                        column: x => x.CompanyWorkId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -154,6 +154,11 @@ namespace KROS_REST_API.Migrations
                 column: "DivisionChiefId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Employees_CompanyWorkId",
+                table: "Employees",
+                column: "CompanyWorkId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Projects_DivisionId",
                 table: "Projects",
                 column: "DivisionId");
@@ -162,11 +167,23 @@ namespace KROS_REST_API.Migrations
                 name: "IX_Projects_ProjectChiefId",
                 table: "Projects",
                 column: "ProjectChiefId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Companies_Employees_DirectorId",
+                table: "Companies",
+                column: "DirectorId",
+                principalTable: "Employees",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Companies_Employees_DirectorId",
+                table: "Companies");
+
             migrationBuilder.DropTable(
                 name: "Departments");
 
@@ -177,10 +194,10 @@ namespace KROS_REST_API.Migrations
                 name: "Divisions");
 
             migrationBuilder.DropTable(
-                name: "Companies");
+                name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "Companies");
         }
     }
 }

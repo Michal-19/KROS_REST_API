@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace KROS_REST_API.DTOs
 {
-    public class CompanyDTO
+    public class UpdateCompanyDTO
     {
         [Required]
         public string Name { get; set; }

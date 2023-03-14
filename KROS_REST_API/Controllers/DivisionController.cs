@@ -35,15 +35,18 @@ namespace KROS_REST_API.Controllers
         [HttpPost]
         public ActionResult<ICollection<Division>> AddDivision(CreateDivisionDTO division)
         {
-            if (division.DivisionChiefId.HasValue)
-            {
-                var employee = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
-                if (employee == null)
-                    return BadRequest("Divisionwith id " + division.DivisionChiefId + " doesnt exist!");
-            }
             var company = _context.Companies.SingleOrDefault(x => x.Id == division.CompanyId);
             if (company == null)
                 return BadRequest("Wrong filled or missing companyId field!");
+            if (division.DivisionChiefId.HasValue)
+            {
+                var divisionChief = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
+                if (divisionChief == null)
+                    return BadRequest("Employee with id " + division.DivisionChiefId + " doesnt exist!");
+                if (company.Id != divisionChief.CompanyWorkId)
+                    return BadRequest("Employee with id " + divisionChief.Id + " work in other company!");
+
+            }
             var newDivision = new Division()
             {
                 Name = division.Name,
@@ -63,9 +66,11 @@ namespace KROS_REST_API.Controllers
                 return NotFound("Division with id " + id + " doesnt exist!");
             if (division.DivisionChiefId.HasValue)
             {
-                var employee = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
-                if (employee == null)
+                var divisionChief = _context.Employees.SingleOrDefault(x => x.Id == division.DivisionChiefId);
+                if (divisionChief == null)
                     return BadRequest("Wrong filled EmployeeId field");
+                if (divisionToUpdate.CompanyId != divisionChief.CompanyWorkId)
+                    return BadRequest("Employee with id " + divisionChief.Id + " work in other cmpany!");
             }
             divisionToUpdate.Name = division.Name;
             divisionToUpdate.DivisionChiefId = division.DivisionChiefId;

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KROS_REST_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230313100050_DatabaseTables")]
+    [Migration("20230313215833_DatabaseTables")]
     partial class DatabaseTables
     {
         /// <inheritdoc />
@@ -109,6 +109,9 @@ namespace KROS_REST_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CompanyWorkId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Degree")
                         .HasColumnType("nvarchar(max)");
 
@@ -127,6 +130,8 @@ namespace KROS_REST_API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyWorkId");
 
                     b.ToTable("Employees");
                 });
@@ -204,6 +209,17 @@ namespace KROS_REST_API.Migrations
                     b.Navigation("DivisionChief");
                 });
 
+            modelBuilder.Entity("KROS_REST_API.Models.Employee", b =>
+                {
+                    b.HasOne("KROS_REST_API.Models.Company", "CompanyWork")
+                        .WithMany("Employees")
+                        .HasForeignKey("CompanyWorkId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("CompanyWork");
+                });
+
             modelBuilder.Entity("KROS_REST_API.Models.Project", b =>
                 {
                     b.HasOne("KROS_REST_API.Models.Division", "Division")
@@ -225,6 +241,8 @@ namespace KROS_REST_API.Migrations
             modelBuilder.Entity("KROS_REST_API.Models.Company", b =>
                 {
                     b.Navigation("Divisions");
+
+                    b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("KROS_REST_API.Models.Division", b =>

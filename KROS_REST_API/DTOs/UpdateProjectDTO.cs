@@ -7,5 +7,6 @@ namespace KROS_REST_API.DTOs
         [Required]
         public string Name { get; set; }
         public int? ProjectChiefId { get; set; }
+        public int DivisionId { get; set; }
     }
 }

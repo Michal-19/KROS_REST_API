@@ -12,6 +12,8 @@ namespace KROS_REST_API.Models
         [JsonIgnore]
         public Employee? Director { get; set; }
         public int? DirectorId { get; set; }
-        public Collection<Division> Divisions { get; set; }
+        public ICollection<Division> Divisions { get; set; }
+        [JsonIgnore]
+        public ICollection<Employee> Employees { get; set; }
     }
 }

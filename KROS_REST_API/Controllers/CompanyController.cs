@@ -33,18 +33,11 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ICollection<Company>> AddCompany(CompanyDTO company)
+        public ActionResult<ICollection<Company>> AddCompany(CreateCompanyDTO company)
         {
-            if (company.DirectorId.HasValue)
-            {
-                var employee = _context.Employees.SingleOrDefault(x => x.Id == company.DirectorId);
-                if (employee == null)
-                    return BadRequest("Employee with id " + company.DirectorId + " doesnt exist!");
-            }
             var newCompany = new Company()
             {
-                Name = company.Name,
-                DirectorId = company.DirectorId
+                Name = company.Name
             };
             _context.Add(newCompany);
             _context.SaveChanges();
@@ -52,16 +45,18 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpPut]
-        public ActionResult<Company> UpdateCompany(int id, CompanyDTO updatedCompany)
+        public ActionResult<Company> UpdateCompany(int id, UpdateCompanyDTO updatedCompany)
         {
             var companyToUpdate = _context.Companies.Include(x => x.Divisions).SingleOrDefault(x => x.Id == id);
             if (companyToUpdate == null)
                 return NotFound("Company with id " + id + " doesnt exist!");
             if (updatedCompany.DirectorId.HasValue)
             {
-                var employee = _context.Employees.Find(updatedCompany.DirectorId);
-                if (employee == null)
-                    return BadRequest("EmployeeId " + updatedCompany.DirectorId + " doesnt exist!");
+                var companyDirector = _context.Employees.Find(updatedCompany.DirectorId);
+                if (companyDirector == null)
+                    return BadRequest("Employee with id " + updatedCompany.DirectorId + " doesnt exist!");
+                if (companyDirector.CompanyWorkId != id)
+                    return BadRequest("Employee with id " + companyDirector.Id + " work in other company!");
             }
             companyToUpdate.Name = updatedCompany.Name;
             companyToUpdate.DirectorId = updatedCompany.DirectorId;
@@ -75,6 +70,14 @@ namespace KROS_REST_API.Controllers
             var company = _context.Companies.Find(id);
             if (company == null)
                 return NotFound("Company with id " + id + " doesnt exist!");
+            if (company.Director != null)
+                company.Director = null;
+            var list = _context.Employees.Where(x => x.CompanyWorkId== id).ToList();
+            foreach (var employee in list)
+            {
+                _context.Remove(employee);
+                _context.SaveChanges();
+            }
             _context.Remove(company);
             _context.SaveChanges();
             return Ok(_context.Companies.Include(x => x.Divisions));

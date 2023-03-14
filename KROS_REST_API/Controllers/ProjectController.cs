@@ -35,15 +35,17 @@ namespace KROS_REST_API.Controllers
         [HttpPost]
         public ActionResult<ICollection<Project>> AddProject(CreateProjectDTO project)
         {
-            if (project.ProjectChiefId.HasValue)
-            {
-                var chief = _context.Employees.SingleOrDefault(x => x.Id == project.ProjectChiefId);
-                if (chief == null)
-                    return BadRequest("Employee with id " + project.ProjectChiefId + " doesnt exist!");
-            }
             var division = _context.Divisions.SingleOrDefault(x => x.Id == project.DivisionId);
             if (division == null)
                 return BadRequest("Wrong filled or empty DivisionId field");
+            if (project.ProjectChiefId.HasValue)
+            {
+                var projectChief = _context.Employees.SingleOrDefault(x => x.Id == project.ProjectChiefId);
+                if (projectChief == null)
+                    return BadRequest("Employee with id " + project.ProjectChiefId + " doesnt exist!");
+                if (division.CompanyId != projectChief.CompanyWorkId)
+                    return BadRequest("Employee with id " + projectChief.Id + " work in other company!");
+            }
             var newProject = new Project()
             {
                 Name = project.Name,
@@ -61,14 +63,23 @@ namespace KROS_REST_API.Controllers
             var projectToUpdate = _context.Projects.Include(x => x.Departments).SingleOrDefault(x => x.Id == id);
             if (projectToUpdate == null)
                 return NotFound("Project with id + " + id + " doesnt exist!");
+            var division = _context.Divisions.Find(project.DivisionId);
+            if (division == null)
+                return BadRequest("Wrong filled or empty divisionId field");
+            var divisionWithUpdatedDepartment = _context.Divisions.Find(projectToUpdate.DivisionId);
+            if (division.CompanyId != divisionWithUpdatedDepartment.CompanyId)
+                return BadRequest("Division with id " + division.CompanyId + " is not from this company!");
             if (project.ProjectChiefId.HasValue)
             {
                 var projectChief = _context.Employees.Find(project.ProjectChiefId);
                 if (projectChief == null)
                     return BadRequest("Empoyee with id" + project.ProjectChiefId + " doesnt exist!");
+                if (divisionWithUpdatedDepartment.CompanyId != projectChief.CompanyWorkId)
+                    return BadRequest("Employee with id " + projectChief.Id + " work in other company!");
             }
             projectToUpdate.Name = project.Name;
             projectToUpdate.ProjectChiefId = project.ProjectChiefId;
+            projectToUpdate.DivisionId = project.DivisionId;
             _context.SaveChanges();
             return Ok(projectToUpdate);
         }

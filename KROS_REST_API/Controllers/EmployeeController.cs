@@ -41,7 +41,7 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ICollection<Employee>> AddEmployee(EmployeeDTO employee) 
+        public ActionResult<ICollection<Employee>> AddEmployee(CreateEmployeeDTO employee) 
         {
             var newEmployee = new Employee()
             {
@@ -49,7 +49,8 @@ namespace KROS_REST_API.Controllers
                 FirstName = employee.FirstName,
                 LastName = employee.LastName,
                 Email = employee.Email,
-                TelephoneNumber = employee.TelephoneNumber
+                TelephoneNumber = employee.TelephoneNumber,
+                CompanyWorkId = employee.CompanyId
             };
             _context.Employees.Add(newEmployee);
             _context.SaveChanges();
@@ -60,7 +61,7 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpPut]
-        public ActionResult<Employee> UpdateEmployee(int id, EmployeeDTO updatedEmployee) 
+        public ActionResult<Employee> UpdateEmployee(int id, UpdateEmployeeDTO updatedEmployee) 
         {
             var employee = _context.Employees.Include(x => x.CompaniesChief)
                                              .Include(x => x.DivisionsChief)
