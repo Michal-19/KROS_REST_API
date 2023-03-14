@@ -1,6 +1,7 @@
 ﻿using KROS_REST_API.Data;
 using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
+using KROS_REST_API.RepositoryPattern.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,89 +11,53 @@ namespace KROS_REST_API.Controllers
     [Route("api/[controller]")]    
     public class ProjectController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IProjectService _service;
 
-        public ProjectController(DataContext context)
+        public ProjectController(IProjectService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
         public ActionResult<ICollection<Project>> GetAllProjects()
         {
-            return Ok(_context.Projects.Include(x => x.Departments));
+            return Ok(_service.GetAll());
         }
 
         [HttpGet("{id}")]
         public ActionResult<Project> GetProjectById(int id)
         {
-            var project = _context.Projects.Include(x => x.Departments).SingleOrDefault(x => x.Id == id);
+            var project = _service.GetOne(id);
             if (project == null)
-                return NotFound("Project with id " + id + " doesnt exist!");
+                return NotFound();
             return Ok(project);
         }
 
         [HttpPost]
         public ActionResult<ICollection<Project>> AddProject(CreateProjectDTO project)
         {
-            var division = _context.Divisions.SingleOrDefault(x => x.Id == project.DivisionId);
-            if (division == null)
-                return BadRequest("Wrong filled or empty DivisionId field");
-            if (project.ProjectChiefId.HasValue)
-            {
-                var projectChief = _context.Employees.SingleOrDefault(x => x.Id == project.ProjectChiefId);
-                if (projectChief == null)
-                    return BadRequest("Employee with id " + project.ProjectChiefId + " doesnt exist!");
-                if (division.CompanyId != projectChief.CompanyWorkId)
-                    return BadRequest("Employee with id " + projectChief.Id + " work in other company!");
-            }
-            var newProject = new Project()
-            {
-                Name = project.Name,
-                ProjectChiefId = project.ProjectChiefId,
-                DivisionId = project.DivisionId
-            };
-            _context.Projects.Add(newProject);
-            _context.SaveChanges();
-            return Ok(_context.Projects);
+            var addedProject = _service.Add(project);
+            if (addedProject == null)
+                return BadRequest();
+            return Ok(addedProject);
         }
 
         [HttpPut]
         public ActionResult<Project> UpdateProject(int id, UpdateProjectDTO project)
         {
-            var projectToUpdate = _context.Projects.Include(x => x.Departments).SingleOrDefault(x => x.Id == id);
-            if (projectToUpdate == null)
-                return NotFound("Project with id + " + id + " doesnt exist!");
-            var division = _context.Divisions.Find(project.DivisionId);
-            if (division == null)
-                return BadRequest("Wrong filled or empty divisionId field");
-            var divisionWithUpdatedDepartment = _context.Divisions.Find(projectToUpdate.DivisionId);
-            if (division.CompanyId != divisionWithUpdatedDepartment.CompanyId)
-                return BadRequest("Division with id " + division.CompanyId + " is not from this company!");
-            if (project.ProjectChiefId.HasValue)
-            {
-                var projectChief = _context.Employees.Find(project.ProjectChiefId);
-                if (projectChief == null)
-                    return BadRequest("Empoyee with id" + project.ProjectChiefId + " doesnt exist!");
-                if (divisionWithUpdatedDepartment.CompanyId != projectChief.CompanyWorkId)
-                    return BadRequest("Employee with id " + projectChief.Id + " work in other company!");
-            }
-            projectToUpdate.Name = project.Name;
-            projectToUpdate.ProjectChiefId = project.ProjectChiefId;
-            projectToUpdate.DivisionId = project.DivisionId;
-            _context.SaveChanges();
-            return Ok(projectToUpdate);
+            var updatedProject = _service.Update(id, project);
+            if (updatedProject == null)
+                return BadRequest();
+            return Ok(updatedProject);
         }
 
         [HttpDelete]
         public ActionResult<ICollection<Project>> DeleteProject(int id) 
         {
-            var projectToDelete = _context.Projects.Find(id);
-            if (projectToDelete == null)
-                return NotFound("Project with id " + id + " doesnt exist");
-            _context.Remove(projectToDelete);
-            _context.SaveChanges();
-            return Ok(_context.Projects.Include(x => x.Departments));
+            var deletedProject = _service.Delete(id);
+            if (deletedProject == null)
+                return NotFound();
+            return Ok(deletedProject);
         }
     }
 }

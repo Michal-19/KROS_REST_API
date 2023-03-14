@@ -1,6 +1,7 @@
 ﻿using KROS_REST_API.Data;
 using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
+using KROS_REST_API.RepositoryPattern.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,77 +11,50 @@ namespace KROS_REST_API.Controllers
     [Route("api/[controller]")]
     public class CompanyController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly ICompanyService _service;
 
-        public CompanyController(DataContext context)
+        public CompanyController(ICompanyService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
         public ActionResult<ICollection<Company>> GetAllCompanies()
         {
-            return Ok(_context.Companies.Include(x => x.Divisions));
+            return Ok(_service.GetAll());
         }
 
         [HttpGet("{id}")]
         public ActionResult<Company> GetCompanyById(int id)
         {
-            var company = _context.Companies.Include(x => x.Divisions).SingleOrDefault(x => x.Id == id);
+            var company = _service.GetOne(id);
             if (company == null)
-                return NotFound("Company with id " + id + " doesnt exist!");
+                return NotFound();
             return Ok(company);
         }
 
         [HttpPost]
         public ActionResult<ICollection<Company>> AddCompany(CreateCompanyDTO company)
         {
-            var newCompany = new Company()
-            {
-                Name = company.Name
-            };
-            _context.Add(newCompany);
-            _context.SaveChanges();
-            return Ok(_context.Companies.Include(x => x.Divisions));
+            return Ok(_service.Add(company));
         }
 
         [HttpPut]
-        public ActionResult<Company> UpdateCompany(int id, UpdateCompanyDTO updatedCompany)
+        public ActionResult<Company> UpdateCompany(int id, UpdateCompanyDTO company)
         {
-            var companyToUpdate = _context.Companies.Include(x => x.Divisions).SingleOrDefault(x => x.Id == id);
-            if (companyToUpdate == null)
-                return NotFound("Company with id " + id + " doesnt exist!");
-            if (updatedCompany.DirectorId.HasValue)
-            {
-                var companyDirector = _context.Employees.Find(updatedCompany.DirectorId);
-                if (companyDirector == null)
-                    return BadRequest("Employee with id " + updatedCompany.DirectorId + " doesnt exist!");
-                if (companyDirector.CompanyWorkId != id)
-                    return BadRequest("Employee with id " + companyDirector.Id + " work in other company!");
-            }
-            companyToUpdate.Name = updatedCompany.Name;
-            companyToUpdate.DirectorId = updatedCompany.DirectorId;
-            _context.SaveChanges();
-            return Ok(companyToUpdate);
+            var updatedCompany = _service.Update(id, company);
+            if (updatedCompany == null)
+                return NotFound();
+            return Ok(updatedCompany);
         }
 
         [HttpDelete]
         public ActionResult<ICollection<Company>> DeleteCompany(int id)
         {
-            var company = _context.Companies.Find(id);
-            if (company == null)
-                return NotFound("Company with id " + id + " doesnt exist!");
-            if (company.Director != null)
-                company.Director = null;
-            var list = _context.Employees.Where(x => x.CompanyWorkId== id).ToList();
-            foreach (var employee in list)
-            {
-                _context.Remove(employee);
-                _context.SaveChanges();
-            }
-            _context.Remove(company);
-            _context.SaveChanges();
-            return Ok(_context.Companies.Include(x => x.Divisions));
+            var deletedCompany = _service.Delete(id);
+            if (deletedCompany == null)
+                return NotFound();
+            return Ok(deletedCompany);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using KROS_REST_API.Data;
 using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
+using KROS_REST_API.RepositoryPattern.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,86 +12,53 @@ namespace KROS_REST_API.Controllers
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IEmployeeService _service;
 
-        public EmployeeController(DataContext context)
+        public EmployeeController(IEmployeeService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet] 
         public ActionResult<ICollection<Employee>> GetAllEmployees() 
         {
-            return Ok(_context.Employees.Include(x => x.CompaniesChief)
-                                        .Include(x => x.DivisionsChief)
-                                        .Include(x => x.ProjectsChief)
-                                        .Include(x => x.DepartmentsChief));
+            return Ok(_service.GetAll());
         }
 
         [HttpGet("{id}")]
         public ActionResult<Employee> GetEmployeeById(int id) 
         {
-            var employee = _context.Employees.Include(x => x.CompaniesChief)
-                                             .Include(x => x.DivisionsChief)
-                                             .Include(x => x.ProjectsChief)
-                                             .Include(x => x.DepartmentsChief)
-                                             .SingleOrDefault(x => x.Id == id);
-            if (employee == null)
-                return NotFound("Employee with id " + id + " doesnt exist!");
+            var employee = _service.GetOne(id);
+            if (employee== null)
+                return NotFound();
             return Ok(employee);
         }
 
         [HttpPost]
         public ActionResult<ICollection<Employee>> AddEmployee(CreateEmployeeDTO employee) 
         {
-            var newEmployee = new Employee()
-            {
-                Degree = employee.Degree,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                Email = employee.Email,
-                TelephoneNumber = employee.TelephoneNumber,
-                CompanyWorkId = employee.CompanyId
-            };
-            _context.Employees.Add(newEmployee);
-            _context.SaveChanges();
-            return Ok(_context.Employees.Include(x => x.CompaniesChief)
-                                        .Include(x => x.DivisionsChief)
-                                        .Include(x => x.ProjectsChief)
-                                        .Include(x => x.DepartmentsChief));
+            var addedEmployee = _service.Add(employee);
+            if (addedEmployee == null) 
+                return BadRequest();
+            return Ok(addedEmployee);
         }
 
         [HttpPut]
-        public ActionResult<Employee> UpdateEmployee(int id, UpdateEmployeeDTO updatedEmployee) 
+        public ActionResult<Employee> Update(int id, UpdateEmployeeDTO employee) 
         {
-            var employee = _context.Employees.Include(x => x.CompaniesChief)
-                                             .Include(x => x.DivisionsChief)
-                                             .Include(x => x.ProjectsChief)
-                                             .Include(x => x.DepartmentsChief)
-                                             .SingleOrDefault(x => x.Id == id);
-            if (employee == null) 
-                return NotFound("Employee with id " + id + " doesnt exist!");
-            employee.Degree = updatedEmployee.Degree;
-            employee.FirstName = updatedEmployee.FirstName;
-            employee.LastName = updatedEmployee.LastName;
-            employee.Email = updatedEmployee.Email;
-            employee.TelephoneNumber = updatedEmployee.TelephoneNumber;
-            _context.SaveChanges();
-            return Ok(employee);
+            var updatedEmployee = _service.Update(id, employee);
+            if (updatedEmployee == null)
+                return BadRequest();
+            return Ok(updatedEmployee);
         }
 
         [HttpDelete]
-        public ActionResult<ICollection<Employee>> DeleteEmployee(int id)
+        public ActionResult<ICollection<Employee>> Delete(int id)
         {
-            var employeeToDelete = _context.Employees.SingleOrDefault(x => x.Id == id);
-            if (employeeToDelete == null)
-                return NotFound("Employee with id " + id + " doesnt exist!");
-            _context.Remove(employeeToDelete);
-            _context.SaveChanges();
-            return Ok(_context.Employees.Include(x => x.CompaniesChief)
-                                        .Include(x => x.DivisionsChief)
-                                        .Include(x => x.ProjectsChief)
-                                        .Include(x => x.DepartmentsChief));
+            var deletedEmployee = _service.Delete(id);
+            if (deletedEmployee == null)
+                return NotFound();
+            return Ok(deletedEmployee);
         }
     }
 }
