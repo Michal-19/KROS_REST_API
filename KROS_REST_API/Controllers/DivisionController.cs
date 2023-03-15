@@ -29,7 +29,7 @@ namespace KROS_REST_API.Controllers
         {
             var division = _service.GetOne(id);
             if (division == null)
-                return NotFound();
+                return NotFound("Division with id " + id + " doesnt exist!");
             return Ok(division);
         }
 
@@ -38,7 +38,7 @@ namespace KROS_REST_API.Controllers
         {
             var addedDivision = _service.Add(division);
             if (addedDivision == null)
-                return BadRequest();
+                return BadRequest("Wrong filled or empty fields!");
             return Ok(addedDivision);
         }
 
@@ -47,7 +47,7 @@ namespace KROS_REST_API.Controllers
         {
             var updatedDivision = _service.Update(id, division);
             if (updatedDivision == null)
-                return BadRequest();
+                return BadRequest("Wrong filled or empty fields!");
             return Ok(updatedDivision);
         }
 
@@ -56,7 +56,7 @@ namespace KROS_REST_API.Controllers
         {
             var deletedDivision = _service.Delete(id);
             if (deletedDivision == null)
-                return NotFound();
+                return NotFound("Division with id " + id + " doesnt exist!");
             return Ok(deletedDivision);
         }
     }

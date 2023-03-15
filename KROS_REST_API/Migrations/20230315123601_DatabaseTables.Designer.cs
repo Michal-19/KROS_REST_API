@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KROS_REST_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230313215833_DatabaseTables")]
+    [Migration("20230315123601_DatabaseTables")]
     partial class DatabaseTables
     {
         /// <inheritdoc />
@@ -42,7 +42,9 @@ namespace KROS_REST_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DirectorId");
+                    b.HasIndex("DirectorId")
+                        .IsUnique()
+                        .HasFilter("[DirectorId] IS NOT NULL");
 
                     b.ToTable("Companies");
                 });
@@ -166,8 +168,8 @@ namespace KROS_REST_API.Migrations
             modelBuilder.Entity("KROS_REST_API.Models.Company", b =>
                 {
                     b.HasOne("KROS_REST_API.Models.Employee", "Director")
-                        .WithMany("CompaniesChief")
-                        .HasForeignKey("DirectorId")
+                        .WithOne("CompanyDirector")
+                        .HasForeignKey("KROS_REST_API.Models.Company", "DirectorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Director");
@@ -252,7 +254,7 @@ namespace KROS_REST_API.Migrations
 
             modelBuilder.Entity("KROS_REST_API.Models.Employee", b =>
                 {
-                    b.Navigation("CompaniesChief");
+                    b.Navigation("CompanyDirector");
 
                     b.Navigation("DepartmentsChief");
 

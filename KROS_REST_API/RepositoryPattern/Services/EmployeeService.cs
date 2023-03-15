@@ -16,7 +16,7 @@ namespace KROS_REST_API.RepositoryPattern.Services
         }
         public ICollection<Employee> GetAll()
         {
-            return _context.Employees.Include(x => x.CompaniesChief)
+            return _context.Employees
                                      .Include(x => x.DivisionsChief)
                                      .Include(x => x.ProjectsChief)
                                      .Include(x => x.DepartmentsChief).ToList();
@@ -24,7 +24,7 @@ namespace KROS_REST_API.RepositoryPattern.Services
 
         public Employee? GetOne(int id)
         {
-            var employee = _context.Employees.Include(x => x.CompaniesChief)
+            var employee = _context.Employees
                                              .Include(x => x.DivisionsChief)
                                              .Include(x => x.ProjectsChief)
                                              .Include(x => x.DepartmentsChief)
@@ -50,7 +50,7 @@ namespace KROS_REST_API.RepositoryPattern.Services
             };
             _context.Employees.Add(newEmployee);
             _context.SaveChanges();
-            return _context.Employees.Include(x => x.CompaniesChief)
+            return _context.Employees
                                      .Include(x => x.DivisionsChief)
                                      .Include(x => x.ProjectsChief)
                                      .Include(x => x.DepartmentsChief).ToList();
@@ -58,7 +58,7 @@ namespace KROS_REST_API.RepositoryPattern.Services
 
         public Employee? Update(int id, UpdateEmployeeDTO employee)
         {
-            var employeeToUpdate = _context.Employees.Include(x => x.CompaniesChief)
+            var employeeToUpdate = _context.Employees
                                                      .Include(x => x.DivisionsChief)
                                                      .Include(x => x.ProjectsChief)
                                                      .Include(x => x.DepartmentsChief)
@@ -81,8 +81,7 @@ namespace KROS_REST_API.RepositoryPattern.Services
                 return null;
             _context.Remove(employeeToDelete);
             _context.SaveChanges();
-            return _context.Employees.Include(x => x.CompaniesChief)
-                                     .Include(x => x.DivisionsChief)
+            return _context.Employees.Include(x => x.DivisionsChief)
                                      .Include(x => x.ProjectsChief)
                                      .Include(x => x.DepartmentsChief).ToList();
         }

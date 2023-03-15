@@ -16,7 +16,7 @@ namespace KROS_REST_API.Models
         [JsonIgnore]
         public Company CompanyWork { get; set; }
         public int CompanyWorkId { get; set; }
-        public ICollection<Company> CompaniesChief { get; set; }
+        public Company? CompanyDirector { get; set; }
         public ICollection<Division> DivisionsChief { get; set; }
         public ICollection<Project> ProjectsChief { get; set; }
         public ICollection<Department> DepartmentsChief { get; set; }

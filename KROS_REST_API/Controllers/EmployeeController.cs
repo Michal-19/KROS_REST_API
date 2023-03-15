@@ -30,7 +30,7 @@ namespace KROS_REST_API.Controllers
         {
             var employee = _service.GetOne(id);
             if (employee== null)
-                return NotFound();
+                return NotFound("Employee with id " + id + " doesnt exist!");
             return Ok(employee);
         }
 
@@ -39,7 +39,7 @@ namespace KROS_REST_API.Controllers
         {
             var addedEmployee = _service.Add(employee);
             if (addedEmployee == null) 
-                return BadRequest();
+                return BadRequest("Company with id " + employee.CompanyId + " doesnt exist!");
             return Ok(addedEmployee);
         }
 
@@ -48,7 +48,7 @@ namespace KROS_REST_API.Controllers
         {
             var updatedEmployee = _service.Update(id, employee);
             if (updatedEmployee == null)
-                return BadRequest();
+                return BadRequest("Employee with id " + id + " doesnt exist!");
             return Ok(updatedEmployee);
         }
 
@@ -57,7 +57,7 @@ namespace KROS_REST_API.Controllers
         {
             var deletedEmployee = _service.Delete(id);
             if (deletedEmployee == null)
-                return NotFound();
+                return NotFound("Employee with id " + id + " doesnt exist!");
             return Ok(deletedEmployee);
         }
     }

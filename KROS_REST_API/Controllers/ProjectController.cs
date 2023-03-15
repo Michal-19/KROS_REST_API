@@ -29,7 +29,7 @@ namespace KROS_REST_API.Controllers
         {
             var project = _service.GetOne(id);
             if (project == null)
-                return NotFound();
+                return NotFound("Project with id " + id + " doesnt exist!");
             return Ok(project);
         }
 
@@ -38,7 +38,7 @@ namespace KROS_REST_API.Controllers
         {
             var addedProject = _service.Add(project);
             if (addedProject == null)
-                return BadRequest();
+                return BadRequest("Wrong filled or empty fields!");
             return Ok(addedProject);
         }
 
@@ -47,7 +47,7 @@ namespace KROS_REST_API.Controllers
         {
             var updatedProject = _service.Update(id, project);
             if (updatedProject == null)
-                return BadRequest();
+                return BadRequest("Wrong filled or empty fields!");
             return Ok(updatedProject);
         }
 
@@ -56,7 +56,7 @@ namespace KROS_REST_API.Controllers
         {
             var deletedProject = _service.Delete(id);
             if (deletedProject == null)
-                return NotFound();
+                return NotFound("Project with id " + id + " doesnt exist!");
             return Ok(deletedProject);
         }
     }

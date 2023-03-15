@@ -131,7 +131,9 @@ namespace KROS_REST_API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Companies_DirectorId",
                 table: "Companies",
-                column: "DirectorId");
+                column: "DirectorId",
+                unique: true,
+                filter: "[DirectorId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Departments_DepartmentChiefId",

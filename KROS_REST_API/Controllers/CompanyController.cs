@@ -29,7 +29,7 @@ namespace KROS_REST_API.Controllers
         {
             var company = _service.GetOne(id);
             if (company == null)
-                return NotFound();
+                return NotFound("Company with id " + id + " doesnt exist!");
             return Ok(company);
         }
 
@@ -44,7 +44,7 @@ namespace KROS_REST_API.Controllers
         {
             var updatedCompany = _service.Update(id, company);
             if (updatedCompany == null)
-                return NotFound();
+                return BadRequest("Wrong filled or empty fields!");
             return Ok(updatedCompany);
         }
 
@@ -53,7 +53,7 @@ namespace KROS_REST_API.Controllers
         {
             var deletedCompany = _service.Delete(id);
             if (deletedCompany == null)
-                return NotFound();
+                return NotFound("Company with id " + id + " doesnt exist!");
             return Ok(deletedCompany);
         }
     }

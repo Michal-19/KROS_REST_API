@@ -29,7 +29,7 @@ namespace KROS_REST_API.Controllers
         {
             var department = _service.GetOne(id);
             if (department == null)
-                return NotFound();
+                return NotFound("Department with id " + id + " doesnt exist!");
             return Ok(department);  
         }
 
@@ -38,7 +38,7 @@ namespace KROS_REST_API.Controllers
         {
             var addedDepartment = _service.Add(department);
             if (addedDepartment == null)
-                return BadRequest();
+                return BadRequest("Wrong filled or empty fields!");
             return Ok(addedDepartment);
         }
 
@@ -47,7 +47,7 @@ namespace KROS_REST_API.Controllers
         {
             var updatedDepartment = _service.Update(id, department);
             if (updatedDepartment == null)
-                return BadRequest();
+                return BadRequest("Wrong filled or empty fields!");
             return Ok(updatedDepartment);
         }
 
@@ -56,7 +56,7 @@ namespace KROS_REST_API.Controllers
         {
             var deletedDepartment = _service.Delete(id);
             if (deletedDepartment == null)
-                return NotFound();
+                return NotFound("Department with id " + id + " doesnt exist!");
             return Ok(deletedDepartment);
         }
     }
