@@ -1,9 +1,11 @@
-﻿using KROS_REST_API.Data;
+﻿using AutoMapper;
+using KROS_REST_API.Data;
 using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
 using KROS_REST_API.RepositoryPattern.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KROS_REST_API.Controllers
 {
@@ -12,52 +14,57 @@ namespace KROS_REST_API.Controllers
     public class DepartmentController : ControllerBase
     {
         private readonly IDepartmentService _service;
+        private readonly IMapper _mapper;
 
-        public DepartmentController(IDepartmentService service)
+        public DepartmentController(IDepartmentService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<ICollection<Department>> GetAllDepartments()
+        public ActionResult<ICollection<GetDepartmentDTO>> GetAllDepartments()
         {
-            return Ok(_service.GetAll());
+            var departmentDTOs = _mapper.Map<ICollection<GetDepartmentDTO>>(_service.GetAll());
+            return Ok(departmentDTOs);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Department> GetDepartmentById(int id)
+        public ActionResult<GetDepartmentDTO> GetDepartmentById(int id)
         {
-            var department = _service.GetOne(id);
-            if (department == null)
+            var departmentDTO = _mapper.Map<GetDepartmentDTO>(_service.GetOne(id));
+            if (departmentDTO == null)
                 return NotFound("Department with id " + id + " doesnt exist!");
-            return Ok(department);  
+            return Ok(departmentDTO);  
         }
 
         [HttpPost]
-        public ActionResult<ICollection<Department>> AddDepartment(CreateDepartmentDTO department)
+        public ActionResult<ICollection<GetDepartmentDTO>> AddDepartment(CreateDepartmentDTO department)
         {
-            var addedDepartment = _service.Add(department);
-            if (addedDepartment == null)
+            var newDepartment = _mapper.Map<Department>(department);
+            var departmentDTOs = _mapper.Map<ICollection<GetDepartmentDTO>>(_service.Add(newDepartment));
+            if (departmentDTOs.IsNullOrEmpty())
                 return BadRequest("Wrong filled or empty fields!");
-            return Ok(addedDepartment);
+            return Ok(departmentDTOs);
         }
 
         [HttpPut]
-        public ActionResult<Department> UpdateDepartment(int id, UpdateDepartmentDTO department)
+        public ActionResult<GetDepartmentDTO> UpdateDepartment(int id, UpdateDepartmentDTO department)
         {
-            var updatedDepartment = _service.Update(id, department);
-            if (updatedDepartment == null)
+            var updatedDepartment = _mapper.Map<Department>(department);
+            var departmentDTO = _mapper.Map<GetDepartmentDTO>(_service.Update(id, updatedDepartment));
+            if (departmentDTO == null)
                 return BadRequest("Wrong filled or empty fields!");
-            return Ok(updatedDepartment);
+            return Ok(departmentDTO);
         }
 
         [HttpDelete]
         public ActionResult<ICollection<Department>> DeleteDepartment(int id)
         {
-            var deletedDepartment = _service.Delete(id);
-            if (deletedDepartment == null)
+            if (_service.GetOne(id) == null)
                 return NotFound("Department with id " + id + " doesnt exist!");
-            return Ok(deletedDepartment);
+            var departmentDTOs = _mapper.Map<ICollection<GetDepartmentDTO>>(_service.Delete(id));
+            return Ok(departmentDTOs);
         }
     }
 }

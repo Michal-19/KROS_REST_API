@@ -7,8 +7,8 @@ namespace KROS_REST_API.RepositoryPattern.Interfaces
     {
         ICollection<Division> GetAll();
         Division? GetOne(int id);
-        ICollection<Division>? Add(CreateDivisionDTO division);
-        Division? Update(int id, UpdateDivisionDTO division);
+        ICollection<Division>? Add(Division division);
+        Division? Update(int id, Division division);
         ICollection<Division>? Delete(int id); 
     }
 }

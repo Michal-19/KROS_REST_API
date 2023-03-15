@@ -1,4 +1,5 @@
-﻿using KROS_REST_API.Data;
+﻿using AutoMapper;
+using KROS_REST_API.Data;
 using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
 using KROS_REST_API.RepositoryPattern.Interfaces;
@@ -13,52 +14,57 @@ namespace KROS_REST_API.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeService _service;
+        private readonly IMapper _mapper;
 
-        public EmployeeController(IEmployeeService service)
+        public EmployeeController(IEmployeeService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
-        [HttpGet] 
-        public ActionResult<ICollection<Employee>> GetAllEmployees() 
+        [HttpGet]
+        public ActionResult<ICollection<GetEmployeeDTO>> GetAllEmployees()
         {
-            return Ok(_service.GetAll());
+            var employeesDTOs = _mapper.Map<ICollection<GetEmployeeDTO>>(_service.GetAll());
+            return Ok(employeesDTOs);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Employee> GetEmployeeById(int id) 
+        public ActionResult<GetEmployeeDTO> GetEmployeeById(int id)
         {
-            var employee = _service.GetOne(id);
-            if (employee== null)
+            var employeeDTO = _mapper.Map<GetEmployeeDTO>(_service.GetOne(id));
+            if (employeeDTO == null)
                 return NotFound("Employee with id " + id + " doesnt exist!");
-            return Ok(employee);
+            return Ok(employeeDTO);
         }
 
         [HttpPost]
-        public ActionResult<ICollection<Employee>> AddEmployee(CreateEmployeeDTO employee) 
+        public ActionResult<ICollection<GetEmployeeDTO>> AddEmployee(CreateEmployeeDTO employee)
         {
-            var addedEmployee = _service.Add(employee);
-            if (addedEmployee == null) 
-                return BadRequest("Company with id " + employee.CompanyId + " doesnt exist!");
-            return Ok(addedEmployee);
+            var newEmployee = _mapper.Map<Employee>(employee);
+            var employeeDTOs = _mapper.Map<ICollection<GetEmployeeDTO>>(_service.Add(newEmployee));
+            if (employeeDTOs.IsNullOrEmpty())
+                return BadRequest("Company with id " + employee.CompanyWorkId + " doesnt exist!");
+            return Ok(employeeDTOs);
         }
 
         [HttpPut]
-        public ActionResult<Employee> Update(int id, UpdateEmployeeDTO employee) 
+        public ActionResult<GetEmployeeDTO> Update(int id, UpdateEmployeeDTO employee)
         {
-            var updatedEmployee = _service.Update(id, employee);
-            if (updatedEmployee == null)
+            var updatedEmployee = _mapper.Map<Employee>(employee);
+            var employeeDTO = _mapper.Map<GetEmployeeDTO>(_service.Update(id, updatedEmployee));
+            if (employeeDTO == null)
                 return BadRequest("Employee with id " + id + " doesnt exist!");
-            return Ok(updatedEmployee);
+            return Ok(employeeDTO);
         }
 
         [HttpDelete]
-        public ActionResult<ICollection<Employee>> Delete(int id)
+        public ActionResult<ICollection<GetEmployeeDTO>> Delete(int id)
         {
-            var deletedEmployee = _service.Delete(id);
-            if (deletedEmployee == null)
+            var employeeDTOs = _mapper.Map<ICollection<GetEmployeeDTO>>(_service.Delete(id));
+            if (employeeDTOs.IsNullOrEmpty())
                 return NotFound("Employee with id " + id + " doesnt exist!");
-            return Ok(deletedEmployee);
+            return Ok(employeeDTOs);
         }
     }
 }

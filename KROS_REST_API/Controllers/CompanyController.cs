@@ -1,9 +1,11 @@
-﻿using KROS_REST_API.Data;
+﻿using AutoMapper;
+using KROS_REST_API.Data;
 using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
 using KROS_REST_API.RepositoryPattern.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KROS_REST_API.Controllers
 {
@@ -12,49 +14,55 @@ namespace KROS_REST_API.Controllers
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyService _service;
+        private readonly IMapper _mapper;
 
-        public CompanyController(ICompanyService service)
+        public CompanyController(ICompanyService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<ICollection<Company>> GetAllCompanies()
+        public ActionResult<ICollection<GetCompanyDTO>> GetAllCompanies()
         {
-            return Ok(_service.GetAll());
+            var companyDTOs = _mapper.Map<ICollection<GetCompanyDTO>>(_service.GetAll());
+            return Ok(companyDTOs);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Company> GetCompanyById(int id)
+        public ActionResult<GetCompanyDTO> GetCompanyById(int id)
         {
-            var company = _service.GetOne(id);
-            if (company == null)
+            var companyDTO = _mapper.Map<GetCompanyDTO>(_service.GetOne(id));
+            if (companyDTO == null)
                 return NotFound("Company with id " + id + " doesnt exist!");
-            return Ok(company);
+            return Ok(companyDTO);
         }
 
         [HttpPost]
-        public ActionResult<ICollection<Company>> AddCompany(CreateCompanyDTO company)
+        public ActionResult<ICollection<GetCompanyDTO>> AddCompany(CreateCompanyDTO company)
         {
-            return Ok(_service.Add(company));
+            var newCompany = _mapper.Map<Company>(company);
+            var companyDTOs = _mapper.Map<ICollection<GetCompanyDTO>>(_service.Add(newCompany));
+            return Ok(companyDTOs);
         }
 
         [HttpPut]
-        public ActionResult<Company> UpdateCompany(int id, UpdateCompanyDTO company)
+        public ActionResult<GetCompanyDTO> UpdateCompany(int id, UpdateCompanyDTO company)
         {
-            var updatedCompany = _service.Update(id, company);
-            if (updatedCompany == null)
+            var updatedCompany = _mapper.Map<Company>(company);
+            var companyDTO = _mapper.Map<GetCompanyDTO>(_service.Update(id, updatedCompany));
+            if (companyDTO == null)
                 return BadRequest("Wrong filled or empty fields!");
-            return Ok(updatedCompany);
+            return Ok(companyDTO);
         }
 
         [HttpDelete]
         public ActionResult<ICollection<Company>> DeleteCompany(int id)
         {
-            var deletedCompany = _service.Delete(id);
-            if (deletedCompany == null)
+            var companyDTOs = _mapper.Map<ICollection<GetCompanyDTO>>(_service.Delete(id));
+            if (companyDTOs.IsNullOrEmpty())
                 return NotFound("Company with id " + id + " doesnt exist!");
-            return Ok(deletedCompany);
+            return Ok(companyDTOs);
         }
     }
 }

@@ -17,44 +17,38 @@ namespace KROS_REST_API.RepositoryPattern.Services
 
         public ICollection<Project> GetAll()
         {
-            return _context.Projects.Include(x => x.Departments).ToList();
+            return _context.Projects.ToList();
         }
 
         public Project? GetOne(int id)
         {
-            var project = _context.Projects.Include(x => x.Departments).SingleOrDefault(x => x.Id == id);
+            var project = _context.Projects.Find(id);
             if (project == null)
                 return null;
             return project;
         }
 
-        public ICollection<Project>? Add(CreateProjectDTO project)
+        public ICollection<Project>? Add(Project project)
         {
-            var division = _context.Divisions.SingleOrDefault(x => x.Id == project.DivisionId);
+            var division = _context.Divisions.Find(project.DivisionId);
             if (division == null)
                 return null;
             if (project.ProjectChiefId.HasValue)
             {
-                var projectChief = _context.Employees.SingleOrDefault(x => x.Id == project.ProjectChiefId);
+                var projectChief = _context.Employees.Find(project.ProjectChiefId);
                 if (projectChief == null)
                     return null;
                 if (division.CompanyId != projectChief.CompanyWorkId)
                     return null;
             }
-            var newProject = new Project()
-            {
-                Name = project.Name,
-                ProjectChiefId = project.ProjectChiefId,
-                DivisionId = project.DivisionId
-            };
-            _context.Projects.Add(newProject);
+            _context.Projects.Add(project);
             _context.SaveChanges();
             return _context.Projects.ToList();
         }
 
-        public Project? Update(int id, UpdateProjectDTO project)
+        public Project? Update(int id, Project project)
         {
-            var projectToUpdate = _context.Projects.Include(x => x.Departments).SingleOrDefault(x => x.Id == id);
+            var projectToUpdate = _context.Projects.Find(id);
             if (projectToUpdate == null)
                 return null;
             var division = _context.Divisions.Find(project.DivisionId);
@@ -85,7 +79,7 @@ namespace KROS_REST_API.RepositoryPattern.Services
                 return null;
             _context.Remove(projectToDelete);
             _context.SaveChanges();
-            return _context.Projects.Include(x => x.Departments).ToList();
+            return _context.Projects.ToList();
         }
     }
 }

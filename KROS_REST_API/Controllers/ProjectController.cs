@@ -1,9 +1,11 @@
-﻿using KROS_REST_API.Data;
+﻿using AutoMapper;
+using KROS_REST_API.Data;
 using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
 using KROS_REST_API.RepositoryPattern.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KROS_REST_API.Controllers
 {
@@ -12,52 +14,57 @@ namespace KROS_REST_API.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _service;
+        private readonly IMapper _mapper;
 
-        public ProjectController(IProjectService service)
+        public ProjectController(IProjectService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<ICollection<Project>> GetAllProjects()
+        public ActionResult<ICollection<GetProjectDTO>> GetAllProjects()
         {
-            return Ok(_service.GetAll());
+            var projectDTOs = _mapper.Map<ICollection<GetProjectDTO>>(_service.GetAll());
+            return Ok(projectDTOs);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Project> GetProjectById(int id)
+        public ActionResult<GetProjectDTO> GetProjectById(int id)
         {
-            var project = _service.GetOne(id);
-            if (project == null)
+            var projectDTO = _mapper.Map<GetProjectDTO>(_service.GetOne(id));
+            if (projectDTO == null)
                 return NotFound("Project with id " + id + " doesnt exist!");
-            return Ok(project);
+            return Ok(projectDTO);
         }
 
         [HttpPost]
-        public ActionResult<ICollection<Project>> AddProject(CreateProjectDTO project)
+        public ActionResult<ICollection<GetProjectDTO>> AddProject(CreateProjectDTO project)
         {
-            var addedProject = _service.Add(project);
-            if (addedProject == null)
+            var newProject = _mapper.Map<Project>(project);
+            var projectDTOs = _mapper.Map<ICollection<GetProjectDTO>>(_service.Add(newProject)); 
+            if (projectDTOs.IsNullOrEmpty())
                 return BadRequest("Wrong filled or empty fields!");
-            return Ok(addedProject);
+            return Ok(projectDTOs);
         }
 
         [HttpPut]
-        public ActionResult<Project> UpdateProject(int id, UpdateProjectDTO project)
+        public ActionResult<GetProjectDTO> UpdateProject(int id, UpdateProjectDTO project)
         {
-            var updatedProject = _service.Update(id, project);
-            if (updatedProject == null)
+            var updatedProject = _mapper.Map<Project>(project);
+            var projectDTOs = _mapper.Map<GetProjectDTO>(_service.Update(id, updatedProject));
+            if (projectDTOs == null)
                 return BadRequest("Wrong filled or empty fields!");
-            return Ok(updatedProject);
+            return Ok(projectDTOs);
         }
 
         [HttpDelete]
-        public ActionResult<ICollection<Project>> DeleteProject(int id) 
+        public ActionResult<ICollection<GetProjectDTO>> DeleteProject(int id) 
         {
-            var deletedProject = _service.Delete(id);
-            if (deletedProject == null)
+            if (_service.GetOne(id) == null)
                 return NotFound("Project with id " + id + " doesnt exist!");
-            return Ok(deletedProject);
+            var projectDTOs = _mapper.Map<ICollection<GetProjectDTO>>(_service.Delete(id));
+            return Ok(projectDTOs);
         }
     }
 }

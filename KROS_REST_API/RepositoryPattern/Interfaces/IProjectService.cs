@@ -7,8 +7,8 @@ namespace KROS_REST_API.RepositoryPattern.Interfaces
     {
         ICollection<Project> GetAll();
         Project? GetOne(int id);
-        ICollection<Project>? Add(CreateProjectDTO project);
-        Project? Update(int id, UpdateProjectDTO project);
+        ICollection<Project>? Add(Project project);
+        Project? Update(int id, Project project);
         ICollection<Project>? Delete(int id);
     }
 }

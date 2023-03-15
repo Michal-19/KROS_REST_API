@@ -7,8 +7,8 @@ namespace KROS_REST_API.RepositoryPattern.Interfaces
     {
         ICollection<Department> GetAll();
         Department? GetOne(int id);
-        ICollection<Department>? Add(CreateDepartmentDTO department);
-        Department? Update(int id, UpdateDepartmentDTO department);
+        ICollection<Department>? Add(Department department);
+        Department? Update(int id, Department department);
         ICollection<Department>? Delete(int id);
     }
 }

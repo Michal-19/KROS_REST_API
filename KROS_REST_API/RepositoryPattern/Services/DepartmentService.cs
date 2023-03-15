@@ -21,13 +21,13 @@ namespace KROS_REST_API.RepositoryPattern.Services
 
         public Department? GetOne(int id)
         {
-            var department = _context.Departments.SingleOrDefault(x => x.Id == id);
+            var department = _context.Departments.Find(id);
             if (department == null)
                 return null;
             return department;
         }
 
-        public ICollection<Department>? Add(CreateDepartmentDTO department)
+        public ICollection<Department>? Add(Department department)
         {
             var project = _context.Projects.Find(department.ProjectId);
             if (project == null)
@@ -41,18 +41,12 @@ namespace KROS_REST_API.RepositoryPattern.Services
                 if (division.CompanyId != departmentChief.CompanyWorkId)
                     return null;
             }
-            var newDepartment = new Department()
-            {
-                Name = department.Name,
-                DepartmentChiefId = department.DepartmentChiefId,
-                ProjectId = department.ProjectId
-            };
-            _context.Add(newDepartment);
+            _context.Add(department);
             _context.SaveChanges();
             return _context.Departments.ToList();
         }
 
-        public Department? Update(int id, UpdateDepartmentDTO department)
+        public Department? Update(int id, Department department)
         {
             var departmentToUpdate = _context.Departments.Find(id);
             if (departmentToUpdate == null)

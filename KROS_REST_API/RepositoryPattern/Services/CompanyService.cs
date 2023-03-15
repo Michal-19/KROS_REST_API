@@ -17,31 +17,27 @@ namespace KROS_REST_API.RepositoryPattern.Services
 
         public ICollection<Company> GetAll()
         {
-            return _context.Companies.Include(x => x.Divisions).ToList();
+            return _context.Companies.ToList();
         }
 
         public Company? GetOne(int id)
         {
-            var company = _context.Companies.Include(x => x.Divisions).SingleOrDefault(x => x.Id == id);
+            var company = _context.Companies.Find(id);
             if (company == null)
                 return null;
             return company;
         }
 
-        public ICollection<Company> Add(CreateCompanyDTO company)
+        public ICollection<Company> Add(Company company)
         {
-            var newCompany = new Company()
-            {
-                Name = company.Name
-            };
-            _context.Add(newCompany);
+            _context.Add(company);
             _context.SaveChanges();
-            return _context.Companies.Include(x => x.Divisions).ToList();
+            return _context.Companies.ToList();
         }
 
-        public Company? Update(int id, UpdateCompanyDTO company)
+        public Company? Update(int id, Company company)
         {
-            var companyToUpdate = _context.Companies.Include(x => x.Divisions).SingleOrDefault(x => x.Id == id);
+            var companyToUpdate = _context.Companies.Find(id);
             if (companyToUpdate == null)
                 return null;
             if (company.DirectorId.HasValue)

@@ -1,3 +1,4 @@
+using KROS_REST_API.AutoMapper;
 using KROS_REST_API.Data;
 using KROS_REST_API.RepositoryPattern.Interfaces;
 using KROS_REST_API.RepositoryPattern.Services;
@@ -14,6 +15,7 @@ builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IDivisionService, DivisionService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddAutoMapper(typeof(AutoMapperConfiguration));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

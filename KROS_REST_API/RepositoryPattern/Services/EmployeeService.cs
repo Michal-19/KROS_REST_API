@@ -16,53 +16,30 @@ namespace KROS_REST_API.RepositoryPattern.Services
         }
         public ICollection<Employee> GetAll()
         {
-            return _context.Employees
-                                     .Include(x => x.DivisionsChief)
-                                     .Include(x => x.ProjectsChief)
-                                     .Include(x => x.DepartmentsChief).ToList();
+            return _context.Employees.ToList();
         }
 
         public Employee? GetOne(int id)
         {
-            var employee = _context.Employees
-                                             .Include(x => x.DivisionsChief)
-                                             .Include(x => x.ProjectsChief)
-                                             .Include(x => x.DepartmentsChief)
-                                             .SingleOrDefault(x => x.Id == id);
+            var employee = _context.Employees.SingleOrDefault(x => x.Id == id);
             if (employee == null)
                 return null;
             return employee;
         }
 
-        public ICollection<Employee>? Add(CreateEmployeeDTO employee)
+        public ICollection<Employee>? Add(Employee employee)
         {
-            var company = _context.Companies.Find(employee.CompanyId);
+            var company = _context.Companies.Find(employee.CompanyWorkId);
             if (company == null)
                 return null;
-            var newEmployee = new Employee()
-            {
-                Degree = employee.Degree,
-                FirstName = employee.FirstName,
-                LastName = employee.LastName,
-                Email = employee.Email,
-                TelephoneNumber = employee.TelephoneNumber,
-                CompanyWorkId = employee.CompanyId
-            };
-            _context.Employees.Add(newEmployee);
+            _context.Employees.Add(employee);
             _context.SaveChanges();
-            return _context.Employees
-                                     .Include(x => x.DivisionsChief)
-                                     .Include(x => x.ProjectsChief)
-                                     .Include(x => x.DepartmentsChief).ToList();
+            return _context.Employees.ToList();
         }
 
-        public Employee? Update(int id, UpdateEmployeeDTO employee)
+        public Employee? Update(int id, Employee employee)
         {
-            var employeeToUpdate = _context.Employees
-                                                     .Include(x => x.DivisionsChief)
-                                                     .Include(x => x.ProjectsChief)
-                                                     .Include(x => x.DepartmentsChief)
-                                                     .SingleOrDefault(x => x.Id == id);
+            var employeeToUpdate = _context.Employees.Find(id);
             if (employeeToUpdate == null)
                 return null;
             employeeToUpdate.Degree = employee.Degree;
@@ -76,14 +53,12 @@ namespace KROS_REST_API.RepositoryPattern.Services
 
         public ICollection<Employee>? Delete(int id)
         {
-            var employeeToDelete = _context.Employees.SingleOrDefault(x => x.Id == id);
+            var employeeToDelete = _context.Employees.Find(id);
             if (employeeToDelete == null)
                 return null;
             _context.Remove(employeeToDelete);
             _context.SaveChanges();
-            return _context.Employees.Include(x => x.DivisionsChief)
-                                     .Include(x => x.ProjectsChief)
-                                     .Include(x => x.DepartmentsChief).ToList();
+            return _context.Employees.ToList();
         }
     }
 }

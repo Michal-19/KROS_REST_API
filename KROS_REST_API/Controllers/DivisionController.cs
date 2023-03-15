@@ -1,10 +1,12 @@
-﻿using KROS_REST_API.Data;
+﻿using AutoMapper;
+using KROS_REST_API.Data;
 using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
 using KROS_REST_API.RepositoryPattern.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KROS_REST_API.Controllers
 {
@@ -13,51 +15,57 @@ namespace KROS_REST_API.Controllers
     public class DivisionController : ControllerBase
     {
         private readonly IDivisionService _service;
-        public DivisionController(IDivisionService service)
+        private readonly IMapper _mapper;
+
+        public DivisionController(IDivisionService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public ActionResult<ICollection<Division>> GetAllDivisions() 
+        public ActionResult<ICollection<GetDivisionDTO>> GetAllDivisions() 
         {
-            return Ok(_service.GetAll());
+            var divisionDTOs = _mapper.Map<ICollection<GetDivisionDTO>>(_service.GetAll());
+            return Ok(divisionDTOs);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Division> GetDivisionById(int id)
+        public ActionResult<GetDivisionDTO> GetDivisionById(int id)
         {
-            var division = _service.GetOne(id);
-            if (division == null)
+            var divisionDTO = _mapper.Map<GetDivisionDTO>(_service.GetOne(id));
+            if (divisionDTO == null)
                 return NotFound("Division with id " + id + " doesnt exist!");
-            return Ok(division);
+            return Ok(divisionDTO);
         }
 
         [HttpPost]
-        public ActionResult<ICollection<Division>> AddDivision(CreateDivisionDTO division)
+        public ActionResult<ICollection<GetDivisionDTO>> AddDivision(CreateDivisionDTO division)
         {
-            var addedDivision = _service.Add(division);
-            if (addedDivision == null)
+            var newDivision = _mapper.Map<Division>(division);
+            var divisionDTOs = _mapper.Map<ICollection<GetDivisionDTO>>(_service.Add(newDivision));
+            if (divisionDTOs.IsNullOrEmpty())
                 return BadRequest("Wrong filled or empty fields!");
-            return Ok(addedDivision);
+            return Ok(divisionDTOs);
         }
 
         [HttpPut]
-        public ActionResult<Division> UpdateDivision(int id, UpdateDivisionDTO division)
+        public ActionResult<GetDivisionDTO> UpdateDivision(int id, UpdateDivisionDTO division)
         {
-            var updatedDivision = _service.Update(id, division);
-            if (updatedDivision == null)
+            var updatedDivision = _mapper.Map<Division>(division);
+            var divisionDTO = _mapper.Map<GetDivisionDTO>(_service.Update(id, updatedDivision));
+            if (divisionDTO == null)
                 return BadRequest("Wrong filled or empty fields!");
-            return Ok(updatedDivision);
+            return Ok(divisionDTO);
         }
 
         [HttpDelete]
-        public ActionResult<ICollection<Division>> DeleteDivision(int id)
+        public ActionResult<ICollection<GetDivisionDTO>> DeleteDivision(int id)
         {
-            var deletedDivision = _service.Delete(id);
-            if (deletedDivision == null)
+            if (_service.GetOne(id) == null)
                 return NotFound("Division with id " + id + " doesnt exist!");
-            return Ok(deletedDivision);
+            var divisionDTOs = _mapper.Map<ICollection<GetDivisionDTO>>(_service.Delete(id));
+            return Ok(divisionDTOs);
         }
     }
 }

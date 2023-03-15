@@ -7,8 +7,8 @@ namespace KROS_REST_API.RepositoryPattern.Interfaces
     {
         ICollection<Company> GetAll();
         Company? GetOne(int id);
-        ICollection<Company> Add(CreateCompanyDTO company);
-        Company? Update(int id, UpdateCompanyDTO company);
+        ICollection<Company> Add(Company company);
+        Company? Update(int id, Company company);
         ICollection<Company>? Delete(int id);
     }
 }
