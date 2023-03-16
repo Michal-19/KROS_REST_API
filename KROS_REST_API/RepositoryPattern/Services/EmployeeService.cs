@@ -1,5 +1,4 @@
 ﻿using KROS_REST_API.Data;
-using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
 using KROS_REST_API.RepositoryPattern.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -14,32 +13,32 @@ namespace KROS_REST_API.RepositoryPattern.Services
         {
             _context = context;
         }
-        public ICollection<Employee> GetAll()
+        public async Task<ICollection<Employee>> GetAll()
         {
-            return _context.Employees.ToList();
+            return await _context.Employees.ToListAsync();
         }
 
-        public Employee? GetOne(int id)
+        public async Task<Employee?> GetOne(int id)
         {
-            var employee = _context.Employees.SingleOrDefault(x => x.Id == id);
+            var employee = await _context.Employees.FindAsync(id);
             if (employee == null)
                 return null;
             return employee;
         }
 
-        public ICollection<Employee>? Add(Employee employee)
+        public async Task<ICollection<Employee>?> Add(Employee employee)
         {
-            var company = _context.Companies.Find(employee.CompanyWorkId);
+            var company = await _context.Companies.FindAsync(employee.CompanyWorkId);
             if (company == null)
                 return null;
-            _context.Employees.Add(employee);
-            _context.SaveChanges();
-            return _context.Employees.ToList();
+            await _context.Employees.AddAsync(employee);
+            await _context.SaveChangesAsync();
+            return await _context.Employees.ToListAsync();
         }
 
-        public Employee? Update(int id, Employee employee)
+        public async Task<Employee?> Update(int id, Employee employee)
         {
-            var employeeToUpdate = _context.Employees.Find(id);
+            var employeeToUpdate = await _context.Employees.FindAsync(id);
             if (employeeToUpdate == null)
                 return null;
             employeeToUpdate.Degree = employee.Degree;
@@ -47,18 +46,18 @@ namespace KROS_REST_API.RepositoryPattern.Services
             employeeToUpdate.LastName = employee.LastName;
             employeeToUpdate.Email = employee.Email;
             employeeToUpdate.TelephoneNumber = employee.TelephoneNumber;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return employeeToUpdate;
         }
 
-        public ICollection<Employee>? Delete(int id)
+        public async Task<ICollection<Employee>?> Delete(int id)
         {
-            var employeeToDelete = _context.Employees.Find(id);
+            var employeeToDelete = await _context.Employees.FindAsync(id);
             if (employeeToDelete == null)
                 return null;
             _context.Remove(employeeToDelete);
-            _context.SaveChanges();
-            return _context.Employees.ToList();
+            await _context.SaveChangesAsync();
+            return await _context.Employees.ToListAsync();
         }
     }
 }

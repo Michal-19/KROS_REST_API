@@ -5,10 +5,10 @@ namespace KROS_REST_API.RepositoryPattern.Interfaces
 {
     public interface ICompanyService
     {
-        ICollection<Company> GetAll();
-        Company? GetOne(int id);
-        ICollection<Company> Add(Company company);
-        Company? Update(int id, Company company);
-        ICollection<Company>? Delete(int id);
+        Task<ICollection<Company>> GetAll();
+        Task<Company?> GetOne(int id);
+        Task<ICollection<Company>> Add(Company company);
+        Task<Company?> Update(int id, Company company);
+        Task<ICollection<Company>?> Delete(int id);
     }
 }

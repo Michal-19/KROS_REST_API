@@ -15,51 +15,51 @@ namespace KROS_REST_API.RepositoryPattern.Services
             _context = context;
         }
 
-        public ICollection<Project> GetAll()
+        public async Task<ICollection<Project>> GetAll()
         {
-            return _context.Projects.ToList();
+            return await _context.Projects.ToListAsync();
         }
 
-        public Project? GetOne(int id)
+        public async Task<Project?> GetOne(int id)
         {
-            var project = _context.Projects.Find(id);
+            var project = await _context.Projects.FindAsync(id);
             if (project == null)
                 return null;
             return project;
         }
 
-        public ICollection<Project>? Add(Project project)
+        public async Task<ICollection<Project>?> Add(Project project)
         {
-            var division = _context.Divisions.Find(project.DivisionId);
+            var division = await _context.Divisions.FindAsync(project.DivisionId);
             if (division == null)
                 return null;
             if (project.ProjectChiefId.HasValue)
             {
-                var projectChief = _context.Employees.Find(project.ProjectChiefId);
+                var projectChief = await _context.Employees.FindAsync(project.ProjectChiefId);
                 if (projectChief == null)
                     return null;
                 if (division.CompanyId != projectChief.CompanyWorkId)
                     return null;
             }
-            _context.Projects.Add(project);
-            _context.SaveChanges();
-            return _context.Projects.ToList();
+            await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
+            return await _context.Projects.ToListAsync();
         }
 
-        public Project? Update(int id, Project project)
+        public async Task<Project?> Update(int id, Project project)
         {
-            var projectToUpdate = _context.Projects.Find(id);
+            var projectToUpdate = await _context.Projects.FindAsync(id);
             if (projectToUpdate == null)
                 return null;
-            var division = _context.Divisions.Find(project.DivisionId);
+            var division = await _context.Divisions.FindAsync(project.DivisionId);
             if (division == null)
                 return null;
-            var divisionWithUpdatedDepartments = _context.Divisions.Find(projectToUpdate.DivisionId);
+            var divisionWithUpdatedDepartments = await _context.Divisions.FindAsync(projectToUpdate.DivisionId);
             if (division.CompanyId != divisionWithUpdatedDepartments.CompanyId)
                 return null;
             if (project.ProjectChiefId.HasValue)
             {
-                var projectChief = _context.Employees.Find(project.ProjectChiefId);
+                var projectChief = await _context.Employees.FindAsync(project.ProjectChiefId);
                 if (projectChief == null)
                     return null;
                 if (divisionWithUpdatedDepartments.CompanyId != projectChief.CompanyWorkId)
@@ -68,18 +68,18 @@ namespace KROS_REST_API.RepositoryPattern.Services
             projectToUpdate.Name = project.Name;
             projectToUpdate.ProjectChiefId = project.ProjectChiefId;
             projectToUpdate.DivisionId = project.DivisionId;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return projectToUpdate;
         }
 
-        public ICollection<Project>? Delete(int id)
+        public async Task<ICollection<Project>?> Delete(int id)
         {
-            var projectToDelete = _context.Projects.Find(id);
+            var projectToDelete = await _context.Projects.FindAsync(id);
             if (projectToDelete == null)
                 return null;
             _context.Remove(projectToDelete);
-            _context.SaveChanges();
-            return _context.Projects.ToList();
+            await _context.SaveChangesAsync();
+            return await _context.Projects.ToListAsync();
         }
     }
 }

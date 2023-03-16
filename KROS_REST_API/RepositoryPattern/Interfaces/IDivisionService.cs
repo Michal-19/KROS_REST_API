@@ -5,10 +5,10 @@ namespace KROS_REST_API.RepositoryPattern.Interfaces
 {
     public interface IDivisionService
     {
-        ICollection<Division> GetAll();
-        Division? GetOne(int id);
-        ICollection<Division>? Add(Division division);
-        Division? Update(int id, Division division);
-        ICollection<Division>? Delete(int id); 
+        Task<ICollection<Division>> GetAll();
+        Task<Division?> GetOne(int id);
+        Task<ICollection<Division>?> Add(Division division);
+        Task<Division?> Update(int id, Division division);
+        Task<ICollection<Division>?> Delete(int id); 
     }
 }

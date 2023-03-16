@@ -15,45 +15,45 @@ namespace KROS_REST_API.RepositoryPattern.Services
             _context = context;
         }
 
-        public ICollection<Division> GetAll()
+        public async Task<ICollection<Division>> GetAll()
         {
-            return _context.Divisions.ToList();
+            return await _context.Divisions.ToListAsync();
         }
 
-        public Division? GetOne(int id)
+        public async Task<Division?> GetOne(int id)
         {
-            var division = _context.Divisions.Find(id);
+            var division = await _context.Divisions.FindAsync(id);
             if (division == null)
                 return null;
             return division;
         }
 
-        public ICollection<Division>? Add(Division division)
+        public async Task<ICollection<Division>?> Add(Division division)
         {
-            var company = _context.Companies.Find(division.CompanyId);
+            var company = await _context.Companies.FindAsync(division.CompanyId);
             if (company == null)
                 return null;
             if (division.DivisionChiefId.HasValue)
             {
-                var divisionChief = _context.Employees.Find(division.DivisionChiefId);
+                var divisionChief = await _context.Employees.FindAsync(division.DivisionChiefId);
                 if (divisionChief == null)
                     return null;
                 if (company.Id != divisionChief.CompanyWorkId)
                     return null;
             }
-            _context.Divisions.Add(division);
-            _context.SaveChanges();
-            return _context.Divisions.ToList();
+            await _context.Divisions.AddAsync(division);
+            await _context.SaveChangesAsync();
+            return await _context.Divisions.ToListAsync();
         }
 
-        public Division? Update(int id, Division division)
+        public async Task<Division?> Update(int id, Division division)
         {
-            var divisionToUpdate = _context.Divisions.Find(id);
+            var divisionToUpdate = await _context.Divisions.FindAsync(id);
             if (divisionToUpdate == null)
                 return null;
             if (division.DivisionChiefId.HasValue)
             {
-                var divisionChief = _context.Employees.Find(division.DivisionChiefId);
+                var divisionChief = await _context.Employees.FindAsync(division.DivisionChiefId);
                 if (divisionChief == null)
                     return null;
                 if (divisionToUpdate.CompanyId != divisionChief.CompanyWorkId)
@@ -61,18 +61,18 @@ namespace KROS_REST_API.RepositoryPattern.Services
             }
             divisionToUpdate.Name = division.Name;
             divisionToUpdate.DivisionChiefId = division.DivisionChiefId;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return divisionToUpdate;
         }
 
-        public ICollection<Division>? Delete(int id)
+        public async Task<ICollection<Division>?> Delete(int id)
         {
-            var divisionToDelete = _context.Divisions.Find(id);
+            var divisionToDelete = await _context.Divisions.FindAsync(id);
             if (divisionToDelete == null)
                 return null;
             _context.Divisions.Remove(divisionToDelete);
-            _context.SaveChanges();
-            return _context.Divisions.ToList();
+            await _context.SaveChangesAsync();
+            return await _context.Divisions.ToListAsync();
         }
     }
 }

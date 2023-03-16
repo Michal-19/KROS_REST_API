@@ -24,47 +24,47 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ICollection<GetDivisionDTO>> GetAllDivisions() 
+        public async Task<ActionResult<ICollection<GetDivisionDTO>>> GetAllDivisions() 
         {
-            var divisionDTOs = _mapper.Map<ICollection<GetDivisionDTO>>(_service.GetAll());
+            var divisionDTOs = _mapper.Map<ICollection<GetDivisionDTO>>(await _service.GetAll());
             return Ok(divisionDTOs);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<GetDivisionDTO> GetDivisionById(int id)
+        public async Task<ActionResult<GetDivisionDTO>> GetDivisionById(int id)
         {
-            var divisionDTO = _mapper.Map<GetDivisionDTO>(_service.GetOne(id));
+            var divisionDTO = _mapper.Map<GetDivisionDTO>(await _service.GetOne(id));
             if (divisionDTO == null)
                 return NotFound("Division with id " + id + " doesnt exist!");
             return Ok(divisionDTO);
         }
 
         [HttpPost]
-        public ActionResult<ICollection<GetDivisionDTO>> AddDivision(CreateDivisionDTO division)
+        public async Task<ActionResult<ICollection<GetDivisionDTO>>> AddDivision(CreateDivisionDTO division)
         {
             var newDivision = _mapper.Map<Division>(division);
-            var divisionDTOs = _mapper.Map<ICollection<GetDivisionDTO>>(_service.Add(newDivision));
+            var divisionDTOs = _mapper.Map<ICollection<GetDivisionDTO>>(await _service.Add(newDivision));
             if (divisionDTOs.IsNullOrEmpty())
                 return BadRequest("Wrong filled or empty fields!");
             return Ok(divisionDTOs);
         }
 
         [HttpPut]
-        public ActionResult<GetDivisionDTO> UpdateDivision(int id, UpdateDivisionDTO division)
+        public async Task<ActionResult<GetDivisionDTO>> UpdateDivision(int id, UpdateDivisionDTO division)
         {
             var updatedDivision = _mapper.Map<Division>(division);
-            var divisionDTO = _mapper.Map<GetDivisionDTO>(_service.Update(id, updatedDivision));
+            var divisionDTO = _mapper.Map<GetDivisionDTO>(await _service.Update(id, updatedDivision));
             if (divisionDTO == null)
                 return BadRequest("Wrong filled or empty fields!");
             return Ok(divisionDTO);
         }
 
         [HttpDelete]
-        public ActionResult<ICollection<GetDivisionDTO>> DeleteDivision(int id)
+        public async Task<ActionResult<ICollection<GetDivisionDTO>>> DeleteDivision(int id)
         {
-            if (_service.GetOne(id) == null)
+            if (await _service.GetOne(id) == null)
                 return NotFound("Division with id " + id + " doesnt exist!");
-            var divisionDTOs = _mapper.Map<ICollection<GetDivisionDTO>>(_service.Delete(id));
+            var divisionDTOs = _mapper.Map<ICollection<GetDivisionDTO>>(await _service.Delete(id));
             return Ok(divisionDTOs);
         }
     }

@@ -5,10 +5,10 @@ namespace KROS_REST_API.RepositoryPattern.Interfaces
 {
     public interface IEmployeeService
     {
-        ICollection<Employee> GetAll();
-        Employee? GetOne(int id);
-        ICollection<Employee>? Add(Employee employee);
-        Employee? Update(int id, Employee employee);
-        ICollection<Employee>? Delete(int id);
+        Task<ICollection<Employee>> GetAll();
+        Task<Employee?> GetOne(int id);
+        Task<ICollection<Employee>?> Add(Employee employee);
+        Task<Employee?> Update(int id, Employee employee);
+        Task<ICollection<Employee>?> Delete(int id);
     }
 }

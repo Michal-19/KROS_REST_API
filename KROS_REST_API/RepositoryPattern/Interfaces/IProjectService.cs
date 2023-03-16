@@ -5,10 +5,10 @@ namespace KROS_REST_API.RepositoryPattern.Interfaces
 {
     public interface IProjectService
     {
-        ICollection<Project> GetAll();
-        Project? GetOne(int id);
-        ICollection<Project>? Add(Project project);
-        Project? Update(int id, Project project);
-        ICollection<Project>? Delete(int id);
+        Task<ICollection<Project>> GetAll();
+        Task<Project?> GetOne(int id);
+        Task<ICollection<Project>?> Add(Project project);
+        Task<Project?> Update(int id, Project project);
+        Task<ICollection<Project>?> Delete(int id);
     }
 }

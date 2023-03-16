@@ -15,34 +15,34 @@ namespace KROS_REST_API.RepositoryPattern.Services
             _context = context;
         }
 
-        public ICollection<Company> GetAll()
+        public async Task<ICollection<Company>> GetAll()
         {
-            return _context.Companies.ToList();
+            return await _context.Companies.ToListAsync();
         }
 
-        public Company? GetOne(int id)
+        public async Task<Company?> GetOne(int id)
         {
-            var company = _context.Companies.Find(id);
+            var company = await _context.Companies.FindAsync(id);
             if (company == null)
                 return null;
             return company;
         }
 
-        public ICollection<Company> Add(Company company)
+        public async Task<ICollection<Company>> Add(Company company)
         {
-            _context.Add(company);
-            _context.SaveChanges();
-            return _context.Companies.ToList();
+            await _context.AddAsync(company);
+            await _context.SaveChangesAsync();
+            return await _context.Companies.ToListAsync();
         }
 
-        public Company? Update(int id, Company company)
+        public async Task<Company?> Update(int id, Company company)
         {
-            var companyToUpdate = _context.Companies.Find(id);
+            var companyToUpdate = await _context.Companies.FindAsync(id);
             if (companyToUpdate == null)
                 return null;
             if (company.DirectorId.HasValue)
             {
-                var companyDirector = _context.Employees.Find(company.DirectorId);
+                var companyDirector = await _context.Employees.FindAsync(company.DirectorId);
                 if (companyDirector == null)
                     return null;
                 if (companyDirector.CompanyWorkId != id)
@@ -50,26 +50,26 @@ namespace KROS_REST_API.RepositoryPattern.Services
             }
             companyToUpdate.Name = company.Name;
             companyToUpdate.DirectorId = company.DirectorId;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return companyToUpdate;
         }
 
-        public ICollection<Company>? Delete(int id)
+        public async Task<ICollection<Company>?> Delete(int id)
         {
-            var companyToDelete = _context.Companies.Find(id);
+            var companyToDelete = await _context.Companies.FindAsync(id);
             if (companyToDelete == null)
                 return null;
             if (companyToDelete.Director != null)
                 companyToDelete.Director = null;
-            var list = _context.Employees.Where(x => x.CompanyWorkId == id).ToList();
+            var list = await _context.Employees.Where(x => x.CompanyWorkId == id).ToListAsync();
             foreach (var employee in list)
             {
                 _context.Remove(employee);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             _context.Remove(companyToDelete);
             _context.SaveChanges();
-            return _context.Companies.Include(x => x.Divisions).ToList();
+            return await _context.Companies.ToListAsync();
         }
     }
 }

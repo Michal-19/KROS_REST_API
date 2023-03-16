@@ -23,45 +23,45 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ICollection<GetCompanyDTO>> GetAllCompanies()
+        public async Task<ActionResult<ICollection<GetCompanyDTO>>> GetAllCompanies()
         {
-            var companyDTOs = _mapper.Map<ICollection<GetCompanyDTO>>(_service.GetAll());
+            var companyDTOs = _mapper.Map<ICollection<GetCompanyDTO>>(await _service.GetAll());
             return Ok(companyDTOs);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<GetCompanyDTO> GetCompanyById(int id)
+        public async Task<ActionResult<GetCompanyDTO>> GetCompanyById(int id)
         {
-            var companyDTO = _mapper.Map<GetCompanyDTO>(_service.GetOne(id));
+            var companyDTO = _mapper.Map<GetCompanyDTO>(await _service.GetOne(id));
             if (companyDTO == null)
                 return NotFound("Company with id " + id + " doesnt exist!");
             return Ok(companyDTO);
         }
 
         [HttpPost]
-        public ActionResult<ICollection<GetCompanyDTO>> AddCompany(CreateCompanyDTO company)
+        public async Task<ActionResult<ICollection<GetCompanyDTO>>> AddCompany(CreateCompanyDTO company)
         {
             var newCompany = _mapper.Map<Company>(company);
-            var companyDTOs = _mapper.Map<ICollection<GetCompanyDTO>>(_service.Add(newCompany));
+            var companyDTOs = _mapper.Map<ICollection<GetCompanyDTO>>(await _service.Add(newCompany));
             return Ok(companyDTOs);
         }
 
         [HttpPut]
-        public ActionResult<GetCompanyDTO> UpdateCompany(int id, UpdateCompanyDTO company)
+        public async Task<ActionResult<GetCompanyDTO>> UpdateCompany(int id, UpdateCompanyDTO company)
         {
             var updatedCompany = _mapper.Map<Company>(company);
-            var companyDTO = _mapper.Map<GetCompanyDTO>(_service.Update(id, updatedCompany));
+            var companyDTO = _mapper.Map<GetCompanyDTO>(await _service.Update(id, updatedCompany));
             if (companyDTO == null)
                 return BadRequest("Wrong filled or empty fields!");
             return Ok(companyDTO);
         }
 
         [HttpDelete]
-        public ActionResult<ICollection<Company>> DeleteCompany(int id)
+        public async Task<ActionResult<ICollection<GetCompanyDTO>>> DeleteCompany(int id)
         {
-            var companyDTOs = _mapper.Map<ICollection<GetCompanyDTO>>(_service.Delete(id));
-            if (companyDTOs.IsNullOrEmpty())
+            if (await _service.GetOne(id) == null)
                 return NotFound("Company with id " + id + " doesnt exist!");
+            var companyDTOs = _mapper.Map<ICollection<GetCompanyDTO>>(await _service.Delete(id));
             return Ok(companyDTOs);
         }
     }
