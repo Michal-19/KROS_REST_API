@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace KROS_REST_API.DTOs
+namespace KROS_REST_API.DTOs.CreateDTOs
 {
     public class CreateEmployeeDTO
     {

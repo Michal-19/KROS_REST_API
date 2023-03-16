@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KROS_REST_API.DTOs;
+using KROS_REST_API.DTOs.GetDTOs;
 using KROS_REST_API.Models;
 
 namespace KROS_REST_API.AutoMapper

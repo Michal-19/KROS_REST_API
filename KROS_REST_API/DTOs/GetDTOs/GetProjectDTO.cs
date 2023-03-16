@@ -1,4 +1,4 @@
-﻿namespace KROS_REST_API.DTOs
+﻿namespace KROS_REST_API.DTOs.GetDTOs
 {
     public class GetProjectDTO
     {

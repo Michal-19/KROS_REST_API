@@ -1,8 +1,10 @@
-﻿namespace KROS_REST_API.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace KROS_REST_API.DTOs.CreateDTOs
 {
-    public class GetDivisionDTO
+    public class CreateDivisionDTO
     {
-        public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
         public int? DivisionChiefId { get; set; }
         public int CompanyId { get; set; }

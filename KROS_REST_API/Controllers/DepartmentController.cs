@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using KROS_REST_API.Data;
-using KROS_REST_API.DTOs;
+using KROS_REST_API.DTOs.CreateDTOs;
+using KROS_REST_API.DTOs.GetDTOs;
+using KROS_REST_API.DTOs.UpdateDTOs;
 using KROS_REST_API.Models;
 using KROS_REST_API.RepositoryPattern.Interfaces;
 using Microsoft.AspNetCore.Mvc;
