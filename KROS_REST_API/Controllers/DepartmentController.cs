@@ -59,7 +59,7 @@ namespace KROS_REST_API.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult<ICollection<Department>>> DeleteDepartment(int id)
+        public async Task<ActionResult<ICollection<GetDepartmentDTO>>> DeleteDepartment(int id)
         {
             if (await _service.GetOne(id) == null)
                 return NotFound("Department with id " + id + " doesnt exist!");
