@@ -1,5 +1,4 @@
-﻿using KROS_REST_API.DTOs;
-using KROS_REST_API.Models;
+﻿using KROS_REST_API.Models;
 
 namespace KROS_REST_API.RepositoryPattern.Interfaces
 {

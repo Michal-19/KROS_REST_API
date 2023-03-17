@@ -13,7 +13,6 @@ namespace KROS_REST_API.Models
         public string LastName { get; set; }
         public string? TelephoneNumber { get; set; }
         public string? Email { get; set; }
-        [JsonIgnore]
         public Company CompanyWork { get; set; }
         public int CompanyWorkId { get; set; }
         public Company? CompanyDirector { get; set; }

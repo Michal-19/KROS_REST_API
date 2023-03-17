@@ -1,5 +1,4 @@
 ﻿using KROS_REST_API.Data;
-using KROS_REST_API.DTOs;
 using KROS_REST_API.Models;
 using KROS_REST_API.RepositoryPattern.Interfaces;
 using Microsoft.EntityFrameworkCore;
